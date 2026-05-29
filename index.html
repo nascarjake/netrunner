@@ -1,0 +1,2826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetDefend // Threat Matrix: Server Rack Edition</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap');
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background:
+                radial-gradient(circle at 18% 12%, rgba(236, 72, 153, 0.18), transparent 26%),
+                radial-gradient(circle at 82% 18%, rgba(34, 211, 238, 0.14), transparent 28%),
+                linear-gradient(135deg, #03040a 0%, #070912 42%, #020308 100%);
+            overflow: hidden;
+        }
+        
+        .tech-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Scanlines and screen flicker */
+        .scanlines {
+            position: relative;
+            overflow: hidden;
+        }
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.015) 50%, rgba(0, 0, 0, 0.22) 50%),
+                linear-gradient(90deg, rgba(236, 72, 153, 0.035), rgba(34, 211, 238, 0.025), rgba(236, 72, 153, 0.035));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        /* Neon styling */
+        .neon-border-cyan {
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.35), inset 0 0 20px rgba(236, 72, 153, 0.08);
+            border: 1px solid rgba(34, 211, 238, 0.7);
+        }
+        .text-glow-cyan {
+            text-shadow: 0 0 7px rgba(34, 211, 238, 0.95), 0 0 22px rgba(34, 211, 238, 0.45);
+        }
+        .text-glow-rose {
+            text-shadow: 0 0 7px rgba(244, 63, 94, 0.95), 0 0 24px rgba(236, 72, 153, 0.5);
+        }
+        .text-glow-amber {
+            text-shadow: 0 0 7px rgba(251, 191, 36, 0.95), 0 0 20px rgba(245, 158, 11, 0.45);
+        }
+
+        /* Animated Grid Background */
+        .grid-bg {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(34, 211, 238, 0.09) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(236, 72, 153, 0.065) 1px, transparent 1px);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 25;
+            background:
+                linear-gradient(90deg, transparent 0 14%, rgba(34, 211, 238, 0.08) 14.2%, transparent 14.5% 66%, rgba(236, 72, 153, 0.07) 66.2%, transparent 66.5%),
+                radial-gradient(circle at 50% 100%, rgba(34, 211, 238, 0.08), transparent 42%);
+            mix-blend-mode: screen;
+        }
+
+        header,
+        aside,
+        main > section > div:last-child {
+            background:
+                linear-gradient(180deg, rgba(3, 7, 18, 0.98), rgba(2, 3, 8, 0.95)) !important;
+            box-shadow: inset 0 0 28px rgba(34, 211, 238, 0.055), 0 0 32px rgba(0, 0, 0, 0.45);
+        }
+
+        header {
+            border-bottom-color: rgba(34, 211, 238, 0.45) !important;
+        }
+
+        aside {
+            backdrop-filter: blur(10px);
+        }
+
+        aside:first-of-type {
+            border-right-color: rgba(236, 72, 153, 0.22) !important;
+        }
+
+        aside:last-of-type {
+            border-left-color: rgba(34, 211, 238, 0.24) !important;
+        }
+
+        button {
+            border-radius: 6px !important;
+        }
+
+        aside button,
+        #tool-link,
+        #tool-slice,
+        #btn-sound,
+        #btn-music {
+            box-shadow: inset 0 0 18px rgba(34, 211, 238, 0.045), 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        aside button:hover,
+        #tool-link:hover,
+        #tool-slice:hover,
+        #btn-sound:hover,
+        #btn-music:hover {
+            box-shadow: 0 0 18px rgba(34, 211, 238, 0.18), inset 0 0 18px rgba(236, 72, 153, 0.08);
+        }
+
+        #ids-terminal,
+        #thermal-monitor,
+        .bg-slate-950.border,
+        .bg-slate-900.border {
+            box-shadow: inset 0 0 22px rgba(34, 211, 238, 0.04);
+        }
+
+        @keyframes title-glitch {
+            0%, 92%, 100% { transform: translateX(0); filter: hue-rotate(0deg); }
+            94% { transform: translateX(1px); filter: hue-rotate(18deg); }
+            96% { transform: translateX(-1px); filter: hue-rotate(-18deg); }
+        }
+
+        h1,
+        #overlay-start .text-6xl,
+        #overlay-gameover .text-5xl {
+            animation: title-glitch 4.8s infinite;
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#22d3ee, #ec4899);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="select-none text-slate-100 scanlines h-screen w-screen flex flex-col grid-bg">
+
+    <!-- HUD Header -->
+    <header class="bg-slate-950/95 border-b border-cyan-500/30 px-6 py-3 flex justify-between items-center z-20 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <div class="w-3.5 h-3.5 rounded-full bg-cyan-500 animate-ping absolute top-0.5 left-0.5 opacity-75"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 relative"></div>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-widest text-cyan-400 text-glow-cyan">NETDEFEND // DATACENTER MATRIX</h1>
+                <p class="text-xs text-slate-500 font-mono tracking-wider">TACTICAL PHYSICAL PATCHING SIMULATOR</p>
+            </div>
+        </div>
+
+        <!-- System Stats Metrics -->
+        <div class="flex gap-8 text-center items-center">
+            <div>
+                <span class="block text-xs text-slate-400 font-mono">SYS INTEGRITY</span>
+                <div class="w-44 bg-slate-900 border border-slate-700 h-4 rounded-sm overflow-hidden mt-1 relative">
+                    <div id="integrity-bar" class="bg-gradient-to-r from-rose-600 to-emerald-500 h-full transition-all duration-300" style="width: 100%;"></div>
+                    <span id="integrity-txt" class="absolute inset-0 text-[10px] font-bold text-center flex items-center justify-center font-mono">100%</span>
+                </div>
+            </div>
+
+            <div>
+                <span class="block text-xs text-slate-400 font-mono">COOLING POWER (N₂)</span>
+                <div class="w-36 bg-slate-900 border border-slate-700 h-4 rounded-sm overflow-hidden mt-1 relative">
+                    <div id="cooling-bar" class="bg-blue-500 h-full transition-all duration-100" style="width: 100%;"></div>
+                    <span id="cooling-txt" class="absolute inset-0 text-[10px] font-bold text-center flex items-center justify-center font-mono text-slate-950">100% N₂ RESERVE</span>
+                </div>
+            </div>
+
+            <div>
+                <span class="block text-xs text-slate-400 font-mono">BUDGET</span>
+                <span id="credits-display" class="text-2xl font-bold text-emerald-400 tech-font">$600</span>
+            </div>
+
+            <div>
+                <span class="block text-xs text-slate-400 font-mono">WAVE SCORE</span>
+                <span id="score-display" class="text-2xl font-bold text-cyan-400 tech-font">0</span>
+            </div>
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="flex items-center gap-2 border-l border-slate-800 pl-6">
+            <button id="btn-sound" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded transition-all text-slate-400 hover:text-cyan-400" title="Toggle Sound FX">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            </button>
+            <button id="btn-music" class="p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded transition-all text-slate-400 hover:text-cyan-400" title="Toggle Synthwave Beats">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Window -->
+    <main class="flex flex-1 overflow-hidden relative">
+
+        <!-- Left Sidebar: Shop, Hardware Modules & Cable Colors -->
+        <aside class="w-80 bg-slate-950/90 border-r border-cyan-500/20 p-4 flex flex-col gap-4 z-10 overflow-y-auto shrink-0 select-none">
+            <div class="border-b border-slate-800 pb-2">
+                <h2 class="text-sm font-bold text-slate-400 tracking-wider">HARDWARE SHOP & UPGRADES</h2>
+            </div>
+
+            <!-- Shop List -->
+            <div class="flex flex-col gap-3">
+                <!-- Upgrade: Cable Bandwidth / Insulation -->
+                <button onclick="buyUpgrade('cableBandwidth')" id="shop-cableBandwidth" class="group flex flex-col text-left p-3 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded transition-all">
+                    <div class="flex justify-between w-full">
+                        <span class="font-bold text-slate-300 group-hover:text-cyan-400">Cat-8 Heavy Cables</span>
+                        <span class="font-mono text-emerald-400 group-hover:scale-105 transition-transform" id="cost-cableBandwidth">$150</span>
+                    </div>
+                    <span class="text-xs text-slate-400 mt-1">Upgrade insulation to allow higher packet counts per physical cable.</span>
+                    <div class="flex gap-1 mt-2" id="level-cableBandwidth"></div>
+                </button>
+
+                <!-- Upgrade: Exhaust Fans -->
+                <button onclick="buyUpgrade('exhaustFans')" id="shop-exhaustFans" class="group flex flex-col text-left p-3 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded transition-all">
+                    <div class="flex justify-between w-full">
+                        <span class="font-bold text-slate-300 group-hover:text-cyan-400">Bay Exhaust Fans</span>
+                        <span class="font-mono text-emerald-400" id="cost-exhaustFans">$120</span>
+                    </div>
+                    <span class="text-xs text-slate-400 mt-1">Reduces heat generation across all processing server modules.</span>
+                    <div class="flex gap-1 mt-2" id="level-exhaustFans"></div>
+                </button>
+
+                <!-- Upgrade: Firewall Filter Speed -->
+                <button onclick="buyUpgrade('firewallSpeed')" id="shop-firewallSpeed" class="group flex flex-col text-left p-3 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 rounded transition-all">
+                    <div class="flex justify-between w-full">
+                        <span class="font-bold text-slate-300 group-hover:text-cyan-400">Firewall Parser ASIC</span>
+                        <span class="font-mono text-emerald-400" id="cost-firewallSpeed">$180</span>
+                    </div>
+                    <span class="text-xs text-slate-400 mt-1">Allows Firewall blades to shred malicious malware packets faster.</span>
+                    <div class="flex gap-1 mt-2" id="level-firewallSpeed"></div>
+                </button>
+
+                <!-- Buyable Modules -->
+                <div class="border-t border-slate-800 pt-3 mt-1">
+                    <span class="text-xs font-bold text-slate-400 tracking-wider">EXPAND RACK HARDWARE</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="buyBlade('loadBalancer')" id="buy-balancer" class="flex flex-col items-center justify-center p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500 text-center rounded transition-all">
+                        <span class="text-xs font-bold text-slate-300">Load Balancer</span>
+                        <span class="text-[10px] text-slate-500">2 IN -> 4 OUT Ports</span>
+                        <span class="text-xs text-emerald-400 font-mono mt-1" id="cost-blade-balancer">$250</span>
+                    </button>
+                    <button onclick="buyBlade('firewall')" id="buy-firewall" class="flex flex-col items-center justify-center p-2 bg-slate-900 border border-slate-800 hover:border-cyan-500 text-center rounded transition-all">
+                        <span class="text-xs font-bold text-slate-300">Firewall Blade</span>
+                        <span class="text-[10px] text-slate-500">Filters Malware</span>
+                        <span class="text-xs text-emerald-400 font-mono mt-1" id="cost-blade-firewall">$300</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cable Color Palette Selector -->
+            <div class="border-t border-slate-800 pt-3 mt-4">
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">PATCH CORD STYLE</span>
+                <div class="flex justify-between gap-2">
+                    <button onclick="setCableColor('#3b82f6')" class="w-8 h-8 rounded-full bg-blue-500 border-2 border-slate-100 hover:scale-110 transition-transform cursor-pointer" id="col-blue"></button>
+                    <button onclick="setCableColor('#eab308')" class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-transparent hover:scale-110 transition-transform cursor-pointer" id="col-yellow"></button>
+                    <button onclick="setCableColor('#a855f7')" class="w-8 h-8 rounded-full bg-purple-500 border-2 border-transparent hover:scale-110 transition-transform cursor-pointer" id="col-purple"></button>
+                    <button onclick="setCableColor('#ec4899')" class="w-8 h-8 rounded-full bg-pink-500 border-2 border-transparent hover:scale-110 transition-transform cursor-pointer" id="col-pink"></button>
+                    <button onclick="setCableColor('#10b981')" class="w-8 h-8 rounded-full bg-emerald-500 border-2 border-transparent hover:scale-110 transition-transform cursor-pointer" id="col-emerald"></button>
+                </div>
+            </div>
+
+            <!-- Nitrogen Cooling Flush Operations -->
+            <div class="border-t border-slate-800 pt-3 mt-auto">
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">THERMAL SHIELD CONTROLS</span>
+                <div class="flex flex-col gap-2">
+                    <button onclick="triggerNitrogenBlast()" class="w-full bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-white py-2 rounded text-xs font-bold font-mono transition-all">
+                        ⚡ EMERGENCY N₂ CRYO-BLAST
+                    </button>
+                    <div class="text-[10px] text-slate-500 leading-tight">Instantly vents and cools all server rack modules to 30°C. Requires N₂ Charge.</div>
+                </div>
+            </div>
+
+            <!-- Active Panic Abilities -->
+            <div class="border-t border-slate-800 pt-3">
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">PANIC ABILITIES</span>
+                <div class="flex flex-col gap-2">
+                    <button onclick="activateAbility('hotSwap')" id="ability-hotSwap" class="w-full bg-fuchsia-950/30 hover:bg-fuchsia-900/40 border border-fuchsia-500/40 text-fuchsia-300 py-2 rounded text-xs font-bold font-mono transition-all">
+                        HOT-SWAP GLOVES
+                    </button>
+                    <button onclick="activateAbility('firewallOverclock')" id="ability-firewallOverclock" class="w-full bg-amber-950/30 hover:bg-amber-900/40 border border-amber-500/40 text-amber-300 py-2 rounded text-xs font-bold font-mono transition-all">
+                        FIREWALL OVERCLOCK
+                    </button>
+                    <button onclick="activateAbility('diagnosticLens')" id="ability-diagnosticLens" class="w-full bg-cyan-950/30 hover:bg-cyan-900/40 border border-cyan-500/40 text-cyan-300 py-2 rounded text-xs font-bold font-mono transition-all">
+                        DIAGNOSTIC LENS
+                    </button>
+                    <div id="ability-status" class="text-[10px] text-slate-500 leading-tight font-mono">Abilities ready. Cooldowns begin after use.</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: Interactive Patch Panel & Server Rack Canvas -->
+        <section class="flex-1 relative bg-slate-950 flex flex-col">
+            <!-- Canvas Simulation Cabinet -->
+            <div class="flex-1 relative cursor-crosshair overflow-hidden" id="canvas-container">
+                <canvas id="game-canvas" class="absolute inset-0 w-full h-full block"></canvas>
+            </div>
+
+            <!-- Controls Footer -->
+            <div class="bg-slate-950/95 border-t border-cyan-500/30 px-6 py-3 flex justify-between items-center shrink-0 z-10 gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-mono mr-2">TOOL SELECTION:</span>
+                    
+                    <button id="tool-link" onclick="setTool('link')" class="px-4 py-2 bg-cyan-950 border border-cyan-500 text-cyan-200 hover:text-white text-sm font-bold rounded flex items-center gap-2 transition-all" title="Patch cable: drag from an OUT RJ45 port to an IN RJ45 port">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        <span>PATCH CABLE</span>
+                    </button>
+
+                    <button id="tool-slice" onclick="setTool('slice')" class="px-4 py-2 bg-slate-900 border border-slate-800 hover:border-orange-500/50 text-slate-300 hover:text-orange-400 text-sm font-bold rounded flex items-center gap-2 transition-all" title="Cable shears: slice existing patch cables">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 11-4.243 4.243 3 3 0 014.243-4.243z" />
+                        </svg>
+                        <span>CABLE SHEARS</span>
+                    </button>
+                </div>
+
+                <div class="text-xs text-slate-400 font-mono flex items-center gap-4">
+                    <span><kbd class="bg-slate-800 px-1 py-0.5 rounded text-slate-300">Shift</kbd> Drag to shear cords instantly</span>
+                    <span><kbd class="bg-slate-800 px-1 py-0.5 rounded text-slate-300">H</kbd>/<kbd class="bg-slate-800 px-1 py-0.5 rounded text-slate-300">F</kbd>/<kbd class="bg-slate-800 px-1 py-0.5 rounded text-slate-300">D</kbd> panic abilities</span>
+                    <span><strong class="text-cyan-400">Prep:</strong> Drag blades to reshape cable paths</span>
+                    <span><strong class="text-rose-500">Unplug:</strong> Clicking a connected Port detaches its cable!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Sidebar: Diagnostics Terminals & Active Module Load Temps -->
+        <aside class="w-80 bg-slate-950/90 border-l border-cyan-500/20 p-4 flex flex-col gap-4 z-10 shrink-0 select-none">
+            <div class="border-b border-slate-800 pb-2">
+                <h2 class="text-sm font-bold text-slate-400 tracking-wider">LIVE TELEMETRY MONITOR</h2>
+            </div>
+
+            <!-- Temperature Monitor Panel -->
+            <div class="flex flex-col gap-2 bg-slate-950 border border-slate-900 p-3 rounded font-mono text-xs">
+                <span class="text-slate-400 font-bold tracking-widest block border-b border-slate-900 pb-1 mb-1">RACK THERMALS:</span>
+                <div id="thermal-monitor" class="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                    <!-- Loaded dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- Terminal logs -->
+            <div class="flex-1 flex flex-col min-h-0">
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2 font-mono">INTELLIGENT DIAGNOSTIC LOGS</span>
+                <div id="ids-terminal" class="flex-1 bg-slate-950 border border-slate-900 p-3 rounded font-mono text-xs overflow-y-auto flex flex-col gap-1 text-slate-300">
+                    <div class="text-cyan-500">// DATACENTER TELEMETRY ENGINE ON</div>
+                    <div class="text-cyan-500">// READY TO MONITORS PORTS...</div>
+                </div>
+            </div>
+
+            <!-- Active Event Monitor -->
+            <div class="border-t border-slate-800 pt-3">
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">CHAOS EVENT BUS</span>
+                <div id="event-panel" class="bg-slate-900 border border-slate-800 rounded p-3 flex flex-col gap-2">
+                    <div class="flex justify-between items-center gap-3">
+                        <span id="event-title" class="text-xs font-bold text-slate-400 font-mono">NO ACTIVE EVENT</span>
+                        <span id="event-countdown" class="text-xs text-slate-500 font-mono">--</span>
+                    </div>
+                    <div class="w-full bg-slate-950 h-1.5 rounded overflow-hidden">
+                        <div id="event-progress" class="bg-fuchsia-500 h-full transition-all duration-300" style="width: 0%;"></div>
+                    </div>
+                    <span id="event-detail" class="text-[10px] text-slate-500 leading-tight font-mono">Rack noise nominal.</span>
+                </div>
+            </div>
+
+            <!-- Active Host Stats -->
+            <div class="border-t border-slate-800 pt-3">
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">THREAT MATRIX ATTACK WAVE</span>
+                <div class="bg-slate-900 border border-slate-800 rounded p-3 text-center flex flex-col justify-center items-center">
+                    <span id="wave-title" class="text-sm font-bold text-slate-300">WAVE 1: BOTNET SCANNING</span>
+                    <div class="w-full bg-slate-950 h-2 rounded mt-2 relative overflow-hidden">
+                        <div id="wave-progress" class="bg-cyan-500 h-full transition-all duration-300" style="width: 0%;"></div>
+                    </div>
+                    <span id="wave-timer-text" class="text-xs text-slate-400 mt-1 font-mono">00:00</span>
+                    <button id="btn-skip-prep" onclick="skipPrepPhase()" class="hidden mt-2 w-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 py-1 rounded text-[10px] font-bold font-mono transition-all">
+                        SKIP PREP // START TRAFFIC
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Overlay Modals -->
+        <!-- Start / Onboarding Screen -->
+        <div id="overlay-start" class="absolute inset-0 bg-slate-950/95 flex flex-col justify-start items-center z-50 p-6 overflow-y-auto">
+            <div class="max-w-2xl w-full text-center flex flex-col items-center py-6">
+                <div class="text-5xl font-bold tracking-widest text-cyan-400 text-glow-cyan font-mono mb-1">NETDEFEND</div>
+                <div class="text-lg font-bold text-slate-400 tracking-wider font-mono mb-4">// SERVER RACK LOAD BALANCING //</div>
+
+                <div class="bg-slate-900/80 border border-cyan-500/30 rounded-lg p-5 text-left text-slate-300 leading-relaxed mb-4 text-sm">
+                    <p class="mb-3 font-bold text-cyan-400 text-lg">DATACENTER OPERATIONAL BRIEFING:</p>
+                    <p class="mb-2">A massive external breach attempt is launching against our corporate host nodes! You are tasked with patching and maintaining physical server rack cables to handle the routing and thermal balancing.</p>
+                    <ul class="list-disc pl-5 mb-4 space-y-1 text-slate-400">
+                        <li><strong class="text-slate-300">Patch Ethernet Cables:</strong> Drag lines from active Output (green/colored) Ports to Input (grey) Ports to route bandwidth.</li>
+                        <li><strong class="text-slate-300">Balance the Load:</strong> High bandwidth heats up modules! Connect a heavy line into a <strong class="text-glow-cyan text-cyan-400">Load Balancer Module</strong> to split traffic round-robin to up to 4 downstream channels.</li>
+                        <li><strong class="text-slate-300">Intercept Attacks:</strong> Direct malicious red hacker packets into <strong class="text-glow-amber text-amber-400">Firewall Blades</strong> to shred them before they reach core servers.</li>
+                        <li><strong class="text-slate-300">Combat Server Heat:</strong> Processing packets raises bay temperature. If server bays exceed 100°C, they spark and catch fire! Buy Exhaust Fans or pump Cryogenic Nitrogen (N₂) to prevent meltdown.</li>
+                    </ul>
+                    <p class="text-amber-400 font-semibold font-mono">WARNING: Breaches or critical hardware burnouts drop system security integrity. Survive 5 waves of intense traffic overload!</p>
+                </div>
+
+                <!-- Select Network Topology / Start Button -->
+                <div class="flex flex-col gap-4 w-full max-w-md">
+                    <span class="text-xs text-slate-400 font-mono tracking-wider">SELECT DATACENTER SUITE</span>
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <button onclick="selectTopology('standard')" id="top-soho" class="px-4 py-3 bg-cyan-950/50 border border-cyan-500 text-cyan-300 rounded font-bold transition-all text-sm">
+                            SUITE ALPHA
+                            <span class="block text-[10px] text-slate-400 font-normal mt-1">Ready loadout with 1 balancer</span>
+                        </button>
+                        <button onclick="selectTopology('empty')" id="top-mesh" class="px-4 py-3 bg-slate-900 border border-slate-800 text-slate-400 rounded hover:border-cyan-500/50 hover:text-cyan-400 font-bold transition-all text-sm">
+                            CUSTOM SUITE
+                            <span class="block text-[10px] text-slate-400 font-normal mt-1">Empty bays, deploy everything manually</span>
+                        </button>
+                    </div>
+
+                    <button onclick="startGame()" class="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black tracking-widest text-lg rounded shadow-lg shadow-cyan-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        INITIATE SERVER POWER GRID
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="overlay-gameover" class="hidden absolute inset-0 bg-slate-950/95 flex flex-col justify-center items-center z-50 p-6">
+            <div class="max-w-md w-full text-center flex flex-col items-center">
+                <div class="text-5xl font-bold tracking-widest text-rose-500 text-glow-rose font-mono mb-2">RACK COLLAPSE</div>
+                <div class="text-sm font-mono text-slate-500 mb-8">// CRITICAL HARDWARE MELTDOWN OVERLOAD //</div>
+
+                <!-- Stats Summary -->
+                <div class="w-full bg-slate-900 border border-rose-500/30 rounded p-5 mb-8 text-left text-slate-300">
+                    <span class="font-bold text-rose-400 block mb-3 font-mono">DATACENTER DIAGNOSTICS:</span>
+                    <div class="flex justify-between border-b border-slate-800 py-1 font-mono text-xs">
+                        <span>Clean Packets Delivered:</span>
+                        <span id="stat-routed" class="text-cyan-400">0</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-800 py-1 font-mono text-xs">
+                        <span>Malware Blocks:</span>
+                        <span id="stat-zapped" class="text-cyan-400">0</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-800 py-1 font-mono text-xs">
+                        <span>Cords Recycled:</span>
+                        <span id="stat-severed" class="text-cyan-400">0</span>
+                    </div>
+                    <div class="flex justify-between py-1 font-mono text-xs">
+                        <span>Waves Sustained:</span>
+                        <span id="stat-wave" class="text-cyan-400">0</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 w-full">
+                    <button onclick="restartGame()" class="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black tracking-widest rounded transition-all">
+                        REBOOT RACK CABINET
+                    </button>
+                    <button onclick="backToMenu()" class="px-8 py-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 rounded font-mono text-sm transition-all">
+                        RETURN TO SUITE SELECTION
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post-Wave Buff Choice -->
+        <div id="overlay-buff" class="hidden absolute inset-0 bg-slate-950/70 z-40 p-6 items-center justify-center">
+            <div class="max-w-3xl w-full bg-slate-950 border border-cyan-500/40 rounded p-5 shadow-lg shadow-cyan-500/20">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <div class="text-xl font-bold tracking-widest text-cyan-300 text-glow-cyan font-mono">SELECT RECOVERY BUFF</div>
+                        <div class="text-xs text-slate-500 font-mono">One field upgrade applies immediately.</div>
+                    </div>
+                    <div class="text-xs text-slate-500 font-mono">RECOVERY WINDOW</div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="chooseWaveBuff('cableCapacity')" class="text-left bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 rounded p-4 transition-all">
+                        <span class="block text-sm font-bold text-cyan-300 font-mono">PATCH REEL</span>
+                        <span class="block text-xs text-slate-400 mt-2">Cable capacity +1 for the rest of this run.</span>
+                    </button>
+                    <button onclick="chooseWaveBuff('coolant')" class="text-left bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 rounded p-4 transition-all">
+                        <span class="block text-sm font-bold text-cyan-300 font-mono">COOLANT CACHE</span>
+                        <span class="block text-xs text-slate-400 mt-2">Restore 35% N₂ and chill every module slightly.</span>
+                    </button>
+                    <button onclick="chooseWaveBuff('cooldowns')" class="text-left bg-slate-900 border border-cyan-500/30 hover:border-cyan-400 rounded p-4 transition-all">
+                        <span class="block text-sm font-bold text-cyan-300 font-mono">TACTICAL MACROS</span>
+                        <span class="block text-xs text-slate-400 mt-2">Reduce panic ability cooldowns by 20%.</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Script / Game Engine logical loop -->
+    <script>
+        // ==========================================
+        // WEB AUDIO SYSTEM
+        // ==========================================
+        class SoundSynth {
+            constructor() {
+                this.ctx = null;
+                this.soundEnabled = true;
+                this.musicEnabled = false;
+                this.seqInterval = null;
+                this.beatIndex = 0;
+            }
+
+            init() {
+                if (this.ctx) return;
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContext();
+            }
+
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                document.getElementById('btn-sound').className = this.soundEnabled ?
+                    'p-2 bg-slate-900 border border-cyan-500 rounded text-cyan-400 transition-all' :
+                    'p-2 bg-slate-900 border border-slate-800 rounded text-slate-400 hover:text-cyan-400 transition-all';
+            }
+
+            toggleMusic() {
+                this.init();
+                this.musicEnabled = !this.musicEnabled;
+                document.getElementById('btn-music').className = this.musicEnabled ?
+                    'p-2 bg-slate-900 border border-cyan-500 rounded text-cyan-400 transition-all animate-pulse' :
+                    'p-2 bg-slate-900 border border-slate-800 rounded text-slate-400 hover:text-cyan-400 transition-all';
+
+                if (this.musicEnabled) {
+                    this.startMusicLoop();
+                } else {
+                    this.stopMusicLoop();
+                }
+            }
+
+            playSnap() {
+                if (!this.soundEnabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                // Double metallic high pitch snap
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200, now);
+                osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.05);
+            }
+
+            playCut() {
+                if (!this.soundEnabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(1800, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.06);
+
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.06);
+            }
+
+            playZap() {
+                if (!this.soundEnabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 0.1);
+
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.1);
+            }
+
+            playNitrogen() {
+                if (!this.soundEnabled || !this.ctx) return;
+                // White noise sweep
+                const bufferSize = this.ctx.sampleRate * 0.5; // 500ms
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1000, this.ctx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(200, this.ctx.currentTime + 0.5);
+
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start();
+            }
+
+            playExplode() {
+                if (!this.soundEnabled || !this.ctx) return;
+                // White noise explosion
+                const bufferSize = this.ctx.sampleRate * 0.4; // 400ms
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+                filter.frequency.exponentialRampToValueAtTime(10, this.ctx.currentTime + 0.4);
+
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                noise.start();
+            }
+
+            playAlarm() {
+                if (!this.soundEnabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.linearRampToValueAtTime(500, now + 0.15);
+                osc.frequency.linearRampToValueAtTime(400, now + 0.3);
+
+                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.3);
+            }
+
+            playBeep(success = true) {
+                if (!this.soundEnabled || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                const freq = success ? 880 : 220;
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.15);
+            }
+
+            startMusicLoop() {
+                this.seqInterval = setInterval(() => {
+                    if (!this.musicEnabled) return;
+                    this.playBeat();
+                }, 140);
+            }
+
+            stopMusicLoop() {
+                if (this.seqInterval) {
+                    clearInterval(this.seqInterval);
+                    this.seqInterval = null;
+                }
+            }
+
+            playBeat() {
+                const now = this.ctx.currentTime;
+                const step = this.beatIndex % 16;
+
+                // Cyber kick
+                if (step % 4 === 0) {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.frequency.setValueAtTime(140, now);
+                    osc.frequency.exponentialRampToValueAtTime(38, now + 0.1);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.start();
+                    osc.stop(now + 0.12);
+                }
+
+                // Cyber Bassline following chords: F -> G -> A -> C
+                let rootFreq = 43.65; // F1
+                if (this.beatIndex < 32) rootFreq = 43.65;
+                else if (this.beatIndex < 64) rootFreq = 49.00; // G1
+                else if (this.beatIndex < 96) rootFreq = 55.00; // A1
+                else if (this.beatIndex < 128) rootFreq = 65.41; // C2
+                else this.beatIndex = 0;
+
+                const playBassSteps = [0, 2, 3, 6, 8, 10, 11, 14].includes(step);
+                if (playBassSteps) {
+                    const osc = this.ctx.createOscillator();
+                    const filter = this.ctx.createBiquadFilter();
+                    const gain = this.ctx.createGain();
+                    osc.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(rootFreq * 2, now); // scale to clear bass octave
+
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(200, now);
+                    filter.frequency.exponentialRampToValueAtTime(90, now + 0.1);
+
+                    gain.gain.setValueAtTime(0.06, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+                    osc.start();
+                    osc.stop(now + 0.12);
+                }
+
+                this.beatIndex++;
+            }
+        }
+
+        const audio = new SoundSynth();
+        document.getElementById('btn-sound').onclick = () => { audio.init(); audio.toggleSound(); };
+        document.getElementById('btn-music').onclick = () => { audio.init(); audio.toggleMusic(); };
+
+        // ==========================================
+        // CONFIG & CORE RACK DATA
+        // ==========================================
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const idsTerminal = document.getElementById('ids-terminal');
+        const thermalMonitor = document.getElementById('thermal-monitor');
+
+        let appState = 'menu';
+        let topology = 'standard';
+        let activeTool = 'link';
+        let patchCableColor = '#3b82f6'; // default blue
+
+        // Player metrics
+        let score = 0;
+        let credits = 600;
+        let systemIntegrity = 100;
+        let nitrogenPower = 100; // emergency venting N₂
+
+        // Upgrades Inventory
+        const upgrades = {
+            cableBandwidth: { level: 1, max: 5, cost: 150, title: 'Cat-8 Cables' },
+            exhaustFans: { level: 1, max: 5, cost: 120, title: 'Exhaust Fans' },
+            firewallSpeed: { level: 1, max: 5, cost: 180, title: 'Firewall ASICs' }
+        };
+
+        // Rack Modules definitions
+        let modules = [];
+        let connections = []; // Ethernet physical patch cables
+        let packets = [];
+        let particles = [];
+
+        // Interaction state
+        let activePortSelection = null;
+        let draggingModule = null; // Can drag units slightly to customize layout
+        let hoveredModule = null;
+        let moduleDragOffset = { x: 0, y: 0 };
+        let mousePos = { x: 0, y: 0 };
+        let hoveredPort = null;
+        let slicePath = [];
+        let isSlicing = false;
+        let isShiftHeld = false;
+
+        // Wave control config
+        let currentWave = 1;
+        let wavePhase = 'prep';
+        let waveTimer = 0;
+        let maxWaveDuration = 45;
+        const wavePhaseDurations = {
+            prep: 12,
+            active: 45,
+            recovery: 10
+        };
+        let waveSpawnTicker = 0;
+        let threatLevel = 1.0;
+        let activeThreatEvent = null;
+        let activeThreatTimer = 0;
+        let activeEvent = null;
+        let eventTriggeredThisWave = false;
+        let eventSpawnTicker = 0;
+        let lastNoRouteWarningAt = 0;
+        let lastNoOutputWarningAt = 0;
+        let waveBuffPending = false;
+        let bonusCableCapacity = 0;
+        let abilityCooldownMultiplier = 1;
+        const abilities = {
+            hotSwap: { title: 'HOT-SWAP', duration: 8, cooldown: 30, activeUntil: 0, cooldownUntil: 0 },
+            firewallOverclock: { title: 'FW OVERCLOCK', duration: 10, cooldown: 34, activeUntil: 0, cooldownUntil: 0 },
+            diagnosticLens: { title: 'DIAGNOSTIC', duration: 9, cooldown: 28, activeUntil: 0, cooldownUntil: 0 }
+        };
+
+        // Diagnostic Trackers
+        let statsCleanDelivered = 0;
+        let statsMalwareBlocks = 0;
+        let statsCordsSevered = 0;
+
+        // Handle scaling
+        function handleResize() {
+            const container = document.getElementById('canvas-container');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            if (modules.length > 0) {
+                layoutRackModules();
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        // Server rack representation logic
+        class Port {
+            constructor(id, parentModule, type, relativeX, relativeY, pinNum) {
+                this.id = id;
+                this.parent = parentModule;
+                this.type = type; // 'IN' or 'OUT'
+                this.rx = relativeX;
+                this.ry = relativeY;
+                this.pinNum = pinNum;
+                this.connectedCable = null;
+                this.lockedUntil = 0;
+            }
+
+            getAbsoluteCoords() {
+                return {
+                    x: this.parent.x + this.rx,
+                    y: this.parent.y + this.ry
+                };
+            }
+
+            draw() {
+                const pos = this.getAbsoluteCoords();
+                const isHovered = hoveredPort === this;
+                const isSelected = activePortSelection === this;
+                const locked = isPortLocked(this);
+                const isValidTarget = activePortSelection && activePortSelection !== this && this.type === 'IN' && !this.connectedCable && !locked;
+                const portColor = this.type === 'OUT' ? '#39ff88' : '#38f8ff';
+                
+                // Outer square metal housing of RJ45 port
+                ctx.save();
+                if (isHovered || isSelected || isValidTarget) {
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, isSelected ? 18 : 15, 0, Math.PI * 2);
+                    ctx.strokeStyle = isValidTarget ? '#f0ff4f' : portColor;
+                    ctx.lineWidth = isSelected ? 2.5 : 1.5;
+                    ctx.shadowBlur = 14;
+                    ctx.shadowColor = isValidTarget ? 'rgba(240, 255, 79, 0.8)' : portColor;
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = '#050816';
+                ctx.strokeStyle = locked ? '#ff2d55' : (this.connectedCable ? '#f0ff4f' : (this.type === 'OUT' ? '#22c55e' : '#22d3ee'));
+                ctx.lineWidth = isHovered ? 2.25 : 1.5;
+                ctx.shadowBlur = locked ? 16 : (isHovered || this.connectedCable ? 12 : 8);
+                ctx.shadowColor = locked ? 'rgba(255, 45, 85, 0.8)' : (this.type === 'OUT' ? 'rgba(34, 197, 94, 0.45)' : 'rgba(34, 211, 238, 0.45)');
+                ctx.fillRect(pos.x - 7, pos.y - 7, 14, 14);
+                ctx.strokeRect(pos.x - 7, pos.y - 7, 14, 14);
+
+                // Port contact line indicator
+                ctx.fillStyle = portColor; // Outward is emerald green, Input is cyan
+                ctx.fillRect(pos.x - 4, pos.y - 4, 8, 4);
+
+                if (this.connectedCable) {
+                    ctx.fillStyle = locked ? '#ff2d55' : '#f0ff4f';
+                    ctx.fillRect(pos.x - 5, pos.y + 2, 10, 2);
+                }
+
+                // Pin Number small label
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = isHovered ? '#ffffff' : '#a5b4fc';
+                ctx.font = '7px monospace';
+                ctx.fillText(this.type[0] + this.pinNum, pos.x - 5, pos.y + 11);
+                
+                ctx.restore();
+            }
+        }
+
+        class Module {
+            constructor(id, type, label, x, y, width, height) {
+                this.id = id;
+                this.type = type; // 'wan_gateway', 'load_balancer', 'firewall', 'mainframe_db'
+                this.label = label;
+                this.x = x;
+                this.y = y;
+                this.w = width;
+                this.h = height;
+                
+                this.temp = 35.0; // Starting Celcius room temperature
+                this.maxTemp = 100.0;
+                
+                this.ports = [];
+                this.activeRoundRobinIndex = 0; // Balancer cyclical mapping
+                this.customPosition = false;
+                
+                // Performance attributes
+                this.scanProgress = 0;
+                this.scanningPacket = null;
+
+                this.initializePorts();
+            }
+
+            initializePorts() {
+                // Different port mappings per unit type
+                if (this.type === 'wan_gateway') {
+                    // Gateway has 4 Output ports
+                    for (let i = 0; i < 4; i++) {
+                        this.ports.push(new Port(`port_wan_${this.id}_${i}`, this, 'OUT', 40 + (i * 45), 32, i + 1));
+                    }
+                } else if (this.type === 'load_balancer') {
+                    // 2 Inputs (Left), 4 Outputs (Right)
+                    this.ports.push(new Port(`port_bal_in_${this.id}_1`, this, 'IN', 30, 32, 1));
+                    this.ports.push(new Port(`port_bal_in_${this.id}_2`, this, 'IN', 65, 32, 2));
+
+                    this.ports.push(new Port(`port_bal_out_${this.id}_1`, this, 'OUT', 125, 32, 1));
+                    this.ports.push(new Port(`port_bal_out_${this.id}_2`, this, 'OUT', 155, 32, 2));
+                    this.ports.push(new Port(`port_bal_out_${this.id}_3`, this, 'OUT', 185, 32, 3));
+                    this.ports.push(new Port(`port_bal_out_${this.id}_4`, this, 'OUT', 215, 32, 4));
+                } else if (this.type === 'firewall') {
+                    // 2 Inputs, 2 Outputs
+                    this.ports.push(new Port(`port_fw_in_${this.id}_1`, this, 'IN', 35, 32, 1));
+                    this.ports.push(new Port(`port_fw_in_${this.id}_2`, this, 'IN', 70, 32, 2));
+
+                    this.ports.push(new Port(`port_fw_out_${this.id}_1`, this, 'OUT', 145, 32, 1));
+                    this.ports.push(new Port(`port_fw_out_${this.id}_2`, this, 'OUT', 185, 32, 2));
+                } else if (this.type === 'mainframe_db') {
+                    // Mainframe server has 4 Inputs
+                    for (let i = 0; i < 4; i++) {
+                        this.ports.push(new Port(`port_mf_in_${this.id}_${i}`, this, 'IN', 40 + (i * 45), 32, i + 1));
+                    }
+                }
+            }
+
+            updateThermals(activePacketsProcessed) {
+                const exhaustEfficiency = 0.05 * upgrades.exhaustFans.level;
+                const heatGenRate = (activePacketsProcessed * 0.12) - exhaustEfficiency;
+                
+                this.temp += heatGenRate;
+                if (this.temp < 30.0) this.temp = 30.0; // Cool room threshold
+                
+                // If thermal overload occurs
+                if (this.temp >= this.maxTemp) {
+                    this.temp = this.maxTemp;
+                    if (Math.random() < 0.1) {
+                        createSparks(this.x + Math.random() * this.w, this.y + this.h/2, '#f43f5e', 8);
+                        audio.playAlarm();
+                        systemIntegrity -= 0.5; // Throttling damage
+                        if (Math.random() < 0.02) {
+                            logIDS(`[THERMAL] Critical thermal throttling on module ${this.label}! Hardware damage occurring.`, 'rose');
+                        }
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                
+                const isOverheated = this.temp >= 85.0;
+                
+                // Module rack unit background
+                const faceplate = ctx.createLinearGradient(this.x, this.y, this.x + this.w, this.y + this.h);
+                faceplate.addColorStop(0, '#050711');
+                faceplate.addColorStop(0.45, '#0d1020');
+                faceplate.addColorStop(1, '#070812');
+                ctx.fillStyle = faceplate;
+                ctx.strokeStyle = isOverheated ? '#ff2d6f' : 'rgba(34, 211, 238, 0.36)';
+                ctx.lineWidth = 3;
+                
+                ctx.shadowBlur = isOverheated ? 20 : 10;
+                ctx.shadowColor = isOverheated ? '#ff2d6f' : 'rgba(34, 211, 238, 0.14)';
+                
+                // Draw module faceplate
+                ctx.fillRect(this.x, this.y, this.w, this.h);
+                ctx.strokeRect(this.x, this.y, this.w, this.h);
+
+                if (draggingModule === this || hoveredModule === this) {
+                    ctx.strokeStyle = draggingModule === this ? '#f0ff4f' : 'rgba(56, 248, 255, 0.6)';
+                    ctx.lineWidth = draggingModule === this ? 2.5 : 1.5;
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeRect(this.x - 4, this.y - 4, this.w + 8, this.h + 8);
+                    ctx.setLineDash([]);
+                }
+
+                if ((wavePhase === 'prep' || wavePhase === 'recovery') && canDragModule(this)) {
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = this.customPosition ? '#f0ff4f' : '#64748b';
+                    ctx.font = '8px "Share Tech Mono"';
+                    ctx.fillText('DRAG', this.x + this.w - 78, this.y + this.h - 14);
+                }
+
+                if (isModuleBrownedOut(this)) {
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.12)';
+                    ctx.fillRect(this.x, this.y, this.w, this.h);
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([6, 6]);
+                    ctx.strokeRect(this.x + 4, this.y + 4, this.w - 8, this.h - 8);
+                    ctx.setLineDash([]);
+                }
+
+                // Grid pattern on metal rack face
+                ctx.strokeStyle = 'rgba(34,211,238,0.045)';
+                ctx.lineWidth = 1;
+                for (let gx = this.x + 10; gx < this.x + this.w; gx += 15) {
+                    ctx.beginPath();
+                    ctx.moveTo(gx, this.y + 4);
+                    ctx.lineTo(gx, this.y + this.h - 4);
+                    ctx.stroke();
+                }
+
+                ctx.strokeStyle = 'rgba(236,72,153,0.10)';
+                ctx.beginPath();
+                ctx.moveTo(this.x + 10, this.y + this.h - 9);
+                ctx.lineTo(this.x + this.w - 10, this.y + this.h - 9);
+                ctx.stroke();
+
+                // Module Title/Label
+                ctx.fillStyle = '#e0faff';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(34, 211, 238, 0.55)';
+                ctx.font = 'bold 11px "Share Tech Mono"';
+                ctx.fillText(this.label, this.x + 12, this.y + 15);
+
+                // Thermal Temperature readout (Flashes red if hot)
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = this.temp >= 75.0 ? '#ff2d6f' : (this.temp >= 55.0 ? '#f59e0b' : '#22d3ee');
+                ctx.fillStyle = this.temp >= 75.0 ? '#ff2d6f' : (this.temp >= 55.0 ? '#f59e0b' : '#38f8ff');
+                ctx.font = '9px "Share Tech Mono"';
+                ctx.fillText(`${this.temp.toFixed(1)}°C`, this.x + this.w - 48, this.y + 15);
+
+                // LED status lights
+                const numLeds = 3;
+                for (let idx = 0; idx < numLeds; idx++) {
+                    ctx.beginPath();
+                    ctx.arc(this.x + this.w - 110 + (idx * 12), this.y + 11, 3.5, 0, Math.PI * 2);
+                    if (isOverheated) {
+                        ctx.fillStyle = (Math.floor(Date.now() / 200) % 2 === 0) ? '#f43f5e' : '#1e293b'; // flash red
+                    } else if (this.type === 'wan_gateway') {
+                        ctx.fillStyle = '#39ff88'; // solid green
+                    } else if (this.type === 'mainframe_db') {
+                        ctx.fillStyle = '#22d3ee'; // database blue
+                    } else {
+                        // Flashing processing indicators
+                        ctx.fillStyle = (Math.random() < 0.3) ? '#f0ff4f' : '#111827';
+                    }
+                    ctx.fill();
+                }
+
+                // Firewall parsing visualization
+                if (this.type === 'firewall' && this.scanningPacket) {
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.15)';
+                    ctx.fillRect(this.x + 110, this.y + 16, 25, 20);
+                    
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(this.x + 110, this.y + 16, 25, 20);
+                    
+                    // laser scanner line sweep animation
+                    const scanY = this.y + 16 + (Math.sin(Date.now() / 100) * 10 + 10);
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 110, scanY);
+                    ctx.lineTo(this.x + 135, scanY);
+                    ctx.stroke();
+                }
+
+                // Draw RJ45 Jacks
+                this.ports.forEach(port => port.draw());
+
+                ctx.restore();
+            }
+        }
+
+        // Ethernet Patch Cables with Hanging Bezier Slack curves
+        class PatchCable {
+            constructor(id, sourcePort, targetPort, color) {
+                this.id = id;
+                this.source = sourcePort; // OUT port
+                this.target = targetPort; // IN port
+                this.color = color;
+                this.traffic = []; // packets riding inside cord
+                
+                // Track usage load (cable breaks if capacity surpassed)
+                this.capacityLoad = 0;
+                this.noiseLevel = 0;
+            }
+
+            draw() {
+                const p1 = this.source.getAbsoluteCoords();
+                const p2 = this.target.getAbsoluteCoords();
+                
+                const cableLimit = getCableBandwidthLimit();
+                const loadRatio = Math.min(this.traffic.length / cableLimit, 1);
+                const stressed = loadRatio >= 0.65;
+                const critical = loadRatio >= 0.9;
+                const heatBloom = activeEvent?.id === 'heatBloom' && stressed;
+                const surged = activeEvent?.id === 'portSurge' && this.source === activeEvent.targetPort;
+                const noisy = this.noiseLevel > 0;
+                const pulse = 0.55 + (Math.sin(Date.now() / 85) * 0.45);
+
+                ctx.save();
+
+                // Bezier Slack curve computation
+                // Calculate middle points
+                const midX = (p1.x + p2.x) / 2;
+                // Add vertical gravity sag offset depending on horizontal distance
+                const dist = Math.abs(p1.x - p2.x);
+                const sagY = Math.max(p1.y, p2.y) + 30 + (dist * 0.12);
+
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.quadraticCurveTo(midX, sagY, p2.x, p2.y);
+                ctx.strokeStyle = 'rgba(2, 6, 23, 0.85)';
+                ctx.lineWidth = critical ? 8 : 6;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.quadraticCurveTo(midX, sagY, p2.x, p2.y);
+                
+                ctx.shadowBlur = noisy ? 20 : (heatBloom ? 22 : (critical || surged ? 18 : (stressed ? 12 : 6)));
+                ctx.shadowColor = noisy ? '#b84cff' : (heatBloom ? '#f97316' : (critical ? '#ff2d55' : (surged ? '#ff2bd6' : (stressed ? '#f0ff4f' : this.color))));
+                ctx.strokeStyle = noisy ? '#b84cff' : (heatBloom ? '#f97316' : (critical ? '#ff2d55' : (surged ? '#ff2bd6' : (stressed ? '#f0ff4f' : this.color))));
+                ctx.lineWidth = critical || surged || heatBloom || noisy ? 4.5 + pulse : (stressed ? 3.5 + (pulse * 0.5) : 2.5);
+                ctx.stroke();
+
+                if (stressed || noisy) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.quadraticCurveTo(midX, sagY, p2.x, p2.y);
+                    ctx.setLineDash(noisy ? [3, 6] : [8, 8]);
+                    ctx.lineDashOffset = -Date.now() / 45;
+                    ctx.strokeStyle = noisy ? '#ffffff' : (critical ? '#ffffff' : '#ff2bd6');
+                    ctx.lineWidth = 1.25;
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+
+                if (this.traffic.length > 0 || noisy) {
+                    const labelPos = this.getPointAt(0.5);
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = noisy ? '#d8b4fe' : (critical ? '#ff2d55' : (stressed ? '#f0ff4f' : '#38f8ff'));
+                    ctx.font = 'bold 9px "Share Tech Mono"';
+                    const loadText = this.traffic.length > 0 ? `${this.traffic.length}/${cableLimit}` : '';
+                    const noiseText = noisy ? ` NOISE x${this.noiseLevel}` : '';
+                    ctx.fillText(`${loadText}${noiseText}`, labelPos.x + 6, labelPos.y - 5);
+                }
+
+                // Spark sparks if cable is reaching limit
+                if (critical && Math.random() < 0.12) {
+                    const tVal = Math.random();
+                    // quadratic formula coordinates interpolation
+                    const sx = (1-tVal)*(1-tVal)*p1.x + 2*(1-tVal)*tVal*midX + tVal*tVal*p2.x;
+                    const sy = (1-tVal)*(1-tVal)*p1.y + 2*(1-tVal)*tVal*sagY + tVal*tVal*p2.y;
+                    createSparks(sx, sy, '#f43f5e', 2);
+                    audio.playAlarm();
+                }
+
+                ctx.restore();
+            }
+
+            // Quadrature Bezier point computation for packet movement
+            getPointAt(t) {
+                const p1 = this.source.getAbsoluteCoords();
+                const p2 = this.target.getAbsoluteCoords();
+                const midX = (p1.x + p2.x) / 2;
+                const dist = Math.abs(p1.x - p2.x);
+                const sagY = Math.max(p1.y, p2.y) + 30 + (dist * 0.12);
+
+                // Quadratic Bezier Interpolation
+                const x = (1 - t) * (1 - t) * p1.x + 2 * (1 - t) * t * midX + t * t * p2.x;
+                const y = (1 - t) * (1 - t) * p1.y + 2 * (1 - t) * t * sagY + t * t * p2.y;
+
+                return { x, y };
+            }
+
+            intersects(x1, y1, x2, y2) {
+                // Approximate curve with simple linear segment intersection for shears/cutters
+                const p1 = this.source.getAbsoluteCoords();
+                const p2 = this.target.getAbsoluteCoords();
+
+                const den = (x1 - x2) * (p1.y - p2.y) - (y1 - y2) * (p1.x - p2.x);
+                if (den === 0) return false;
+
+                const t = ((x1 - p1.x) * (p1.y - p2.y) - (y1 - p1.y) * (p1.x - p2.x)) / den;
+                const u = -((x1 - x2) * (y1 - p1.y) - (y1 - y2) * (x1 - p1.x)) / den;
+
+                return (t >= 0 && t <= 1 && u >= 0 && u <= 1);
+            }
+        }
+
+        // Network Packet
+        class Packet {
+            constructor(cable, type) {
+                this.cable = cable;
+                this.type = type; // 'good', 'malware', 'ransomware', 'ddos'
+                this.progress = 0; // 0 to 1 along Bezier curve
+                this.speed = 0.013 + Math.random() * 0.01;
+                this.size = 5;
+            }
+
+            update() {
+                this.progress += this.speed * threatLevel * getCableSpeedMultiplier(this.cable);
+                if (this.progress >= 1.0) {
+                    // Packet successfully reached Target Port!
+                    this.processDestinationArrival();
+                }
+            }
+
+            draw() {
+                const pos = this.cable.getPointAt(this.progress);
+
+                ctx.save();
+                ctx.shadowBlur = 10;
+                let color = '#39ff88'; // good packets (green)
+                if (this.type === 'malware') color = '#ff2d55'; // hacker malware (red)
+                else if (this.type === 'ransomware') color = '#b84cff'; // encryptor virus (purple)
+                else if (this.type === 'ddos') color = '#ff2bd6'; // heavy ddos payload (pink)
+
+                ctx.shadowColor = color;
+                ctx.fillStyle = color;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+
+                if (this.type === 'good') {
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (this.type === 'malware') {
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y - this.size - 1);
+                    ctx.lineTo(pos.x + this.size + 1, pos.y);
+                    ctx.lineTo(pos.x, pos.y + this.size + 1);
+                    ctx.lineTo(pos.x - this.size - 1, pos.y);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.type === 'ransomware') {
+                    ctx.fillRect(pos.x - this.size, pos.y - this.size, this.size * 2, this.size * 2);
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y - this.size - 2);
+                    ctx.lineTo(pos.x + this.size + 2, pos.y + this.size + 1);
+                    ctx.lineTo(pos.x - this.size - 2, pos.y + this.size + 1);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+
+                // Small details inside packets
+                if (this.type !== 'good') {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '7px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(this.type === 'ransomware' ? '!' : 'x', pos.x, pos.y);
+                }
+                ctx.restore();
+            }
+
+            processDestinationArrival() {
+                const targetPort = this.cable.target;
+                const targetModule = targetPort.parent;
+
+                // Remove from current cable track
+                this.cable.traffic = this.cable.traffic.filter(p => p !== this);
+                packets = packets.filter(p => p !== this);
+
+                // Apply processing thermal load increase
+                targetModule.updateThermals(1);
+
+                if (targetModule.type === 'mainframe_db') {
+                    // Mainframe Database absorption
+                    if (this.type === 'good') {
+                        const reward = 25;
+                        credits += reward;
+                        score += 150;
+                        statsCleanDelivered++;
+                        audio.playBeep(true);
+                        createExplosion(targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y, '#39ff88', 8);
+                        floatingText(`DELIVERED +$${reward}`, targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y - 15, '#39ff88');
+                    } else {
+                        // Core security breach!
+                        let breachDmg = 12;
+                        if (this.type === 'ransomware') {
+                            breachDmg = 8;
+                            // lock a target module down
+                            lockRandomModule();
+                        }
+                        systemIntegrity -= breachDmg;
+                        if (systemIntegrity < 0) systemIntegrity = 0;
+                        audio.playBeep(false);
+                        audio.playAlarm();
+                        createExplosion(targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y, '#ff2d55', 20);
+                        floatingText(`-${breachDmg}% SEC`, targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y - 15, '#ef4444');
+                        logIDS(`[BREACH] Malicious packet infected database via ${targetPort.id}! Integrity down.`, 'rose');
+                    }
+                } 
+                else if (targetModule.type === 'firewall') {
+                    // Firewall processes the packet
+                    if (this.type === 'good') {
+                        // Pass through directly to active Output ports
+                        floatingText('PASS', targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y - 14, '#38f8ff');
+                        dispatchDirectlyFromModule(targetModule, 'good');
+                    } else {
+                        // Intercept and scan virus packets
+                        if (!targetModule.scanningPacket) {
+                            targetModule.scanningPacket = this;
+                            targetModule.scanProgress = 0;
+                            floatingText('SCAN', targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y - 14, '#fbbf24');
+                        } else {
+                            // Queue backup or spill over to outputs if overloaded
+                            dispatchDirectlyFromModule(targetModule, this.type);
+                        }
+                    }
+                } 
+                else if (targetModule.type === 'load_balancer') {
+                    // Cyclically route packets to balance load across outputs
+                    floatingText('SPLIT', targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y - 14, '#38f8ff');
+                    dispatchCyclicallyFromModule(targetModule, this.type);
+                }
+            }
+        }
+
+        // Floating info visuals
+        class Particle {
+            constructor(x, y, vx, vy, color, size, life) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.size = size;
+                this.life = life;
+                this.maxLife = life;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life--;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life / this.maxLife;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class FloatingText {
+            constructor(text, x, y, color) {
+                this.text = text;
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.life = 45;
+            }
+
+            update() {
+                this.y -= 0.6;
+                this.life--;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life / 45;
+                ctx.font = 'bold 12px "Share Tech Mono"';
+                ctx.fillStyle = this.color;
+                ctx.fillText(this.text, this.x, this.y);
+                ctx.restore();
+            }
+        }
+
+        // ==========================================
+        // EXPLICIT PORT PATCH ROUTING
+        // ==========================================
+        function dispatchDirectlyFromModule(moduleInst, packetType) {
+            // Find connected output ports of this module
+            const outPorts = moduleInst.ports.filter(p => p.type === 'OUT' && p.connectedCable);
+            if (outPorts.length > 0) {
+                // Choose first connected output port
+                const destPort = outPorts[Math.floor(Math.random() * outPorts.length)];
+                const nextPacket = new Packet(destPort.connectedCable, packetType);
+                destPort.connectedCable.traffic.push(nextPacket);
+                packets.push(nextPacket);
+            } else {
+                warnNoOutput(moduleInst);
+            }
+        }
+
+        function dispatchCyclicallyFromModule(balancerModule, packetType) {
+            const outPorts = balancerModule.ports.filter(p => p.type === 'OUT');
+            const connectedOutPorts = outPorts.filter(p => p.connectedCable);
+
+            if (connectedOutPorts.length > 0) {
+                // Load Balance: select index, cycle round-robin
+                let targetPort = null;
+                for (let attempt = 0; attempt < outPorts.length; attempt++) {
+                    const candidateIdx = balancerModule.activeRoundRobinIndex;
+                    const candidatePort = outPorts[candidateIdx];
+                    balancerModule.activeRoundRobinIndex = (balancerModule.activeRoundRobinIndex + 1) % outPorts.length;
+
+                    if (candidatePort.connectedCable) {
+                        targetPort = candidatePort;
+                        break;
+                    }
+                }
+
+                if (targetPort) {
+                    const balPacket = new Packet(targetPort.connectedCable, packetType);
+                    targetPort.connectedCable.traffic.push(balPacket);
+                    packets.push(balPacket);
+                }
+            } else {
+                warnNoOutput(balancerModule);
+            }
+        }
+
+        function warnNoOutput(moduleInst) {
+            const now = Date.now();
+            floatingText('NO OUT', moduleInst.x + moduleInst.w / 2, moduleInst.y - 10, '#f59e0b');
+            if (now - lastNoOutputWarningAt > 1800) {
+                lastNoOutputWarningAt = now;
+                logIDS(`[ROUTING] ${moduleInst.label} has no connected OUT path. Traffic is being dropped.`, 'amber');
+            }
+        }
+
+        // ==========================================
+        // UPGRADE VALUE RETRIEVERS
+        // ==========================================
+        function getCableBandwidthLimit() {
+            // Level 1: 3 packets, Level 5: 11 packets capacity
+            return 2 + upgrades.cableBandwidth.level * 2 + bonusCableCapacity;
+        }
+
+        function getFirewallSpeedStep() {
+            const overclock = isAbilityActive('firewallOverclock') ? 2.35 : 1;
+            return 0.015 * upgrades.firewallSpeed.level * overclock;
+        }
+
+        function isAbilityActive(key) {
+            return Date.now() < abilities[key].activeUntil;
+        }
+
+        function getCableSpeedMultiplier(cable) {
+            let multiplier = 1;
+            if (activeEvent?.id === 'brownout') {
+                const sourceHit = isModuleBrownedOut(cable.source.parent);
+                const targetHit = isModuleBrownedOut(cable.target.parent);
+                if (sourceHit || targetHit) multiplier *= 0.72;
+            }
+            if (cable.noiseLevel > 0) {
+                multiplier *= Math.max(0.76, 1 - (cable.noiseLevel * 0.08));
+            }
+            return multiplier;
+        }
+
+        function isModuleBrownedOut(moduleInst) {
+            if (activeEvent?.id !== 'brownout') return false;
+            return activeEvent.side === 'left'
+                ? moduleInst.x + moduleInst.w / 2 < canvas.width / 2
+                : moduleInst.x + moduleInst.w / 2 >= canvas.width / 2;
+        }
+
+        function isPortLocked(port) {
+            return port.lockedUntil && Date.now() < port.lockedUntil;
+        }
+
+        function getAllPorts() {
+            return modules.flatMap(m => m.ports);
+        }
+
+        function canDragModule(moduleInst) {
+            return moduleInst.type === 'load_balancer' || moduleInst.type === 'firewall';
+        }
+
+        // ==========================================
+        // FX SYSTEMS
+        // ==========================================
+        function createExplosion(x, y, color, count = 12) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 1.5 + Math.random() * 3.5;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                const size = 1 + Math.random() * 2.5;
+                const life = 20 + Math.random() * 20;
+                particles.push(new Particle(x, y, vx, vy, color, size, life));
+            }
+        }
+
+        function createSparks(x, y, color, count = 5) {
+            for (let i = 0; i < count; i++) {
+                const vx = (Math.random() - 0.5) * 4;
+                const vy = (Math.random() - 0.5) * 4 - 2;
+                particles.push(new Particle(x, y, vx, vy, color, 1.5, 15 + Math.random() * 12));
+            }
+        }
+
+        function floatingText(text, x, y, color) {
+            particles.push(new FloatingText(text, x, y, color));
+        }
+
+        function logIDS(msg, type = 'slate') {
+            const colors = {
+                slate: 'text-slate-400',
+                cyan: 'text-cyan-400',
+                rose: 'text-rose-400',
+                amber: 'text-amber-500',
+                emerald: 'text-emerald-400'
+            };
+            const colClass = colors[type] || colors.slate;
+            const timeStr = new Date().toLocaleTimeString([], { hour12: false });
+            idsTerminal.innerHTML += `<div class="${colClass}">[${timeStr}] ${msg}</div>`;
+            idsTerminal.scrollTop = idsTerminal.scrollHeight;
+        }
+
+        // ==========================================
+        // TOPOLOGY CONFIGURATOR
+        // ==========================================
+        function selectTopology(type) {
+            topology = type;
+            document.getElementById('top-soho').className = type === 'standard' ? 
+                'px-4 py-3 bg-cyan-950/50 border border-cyan-500 text-cyan-300 rounded font-bold transition-all text-sm' :
+                'px-4 py-3 bg-slate-900 border border-slate-800 text-slate-400 rounded hover:border-cyan-500/50 hover:text-cyan-400 font-bold transition-all text-sm';
+            document.getElementById('top-mesh').className = type === 'empty' ? 
+                'px-4 py-3 bg-cyan-950/50 border border-cyan-500 text-cyan-300 rounded font-bold transition-all text-sm' :
+                'px-4 py-3 bg-slate-900 border border-slate-800 text-slate-400 rounded hover:border-cyan-500/50 hover:text-cyan-400 font-bold transition-all text-sm';
+            audio.init();
+            audio.playBeep(true);
+        }
+
+        function loadTopology() {
+            modules = [];
+            connections = [];
+            packets = [];
+            particles = [];
+
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // Generate physical rack slots layout
+            // Main Top WAN Gateway
+            modules.push(new Module(1, 'wan_gateway', 'WAN GATEWAY BLADE [SLOT 1]', w * 0.1, 40, w * 0.8, 55));
+
+            if (topology === 'standard') {
+                // Populate intermediate units
+                modules.push(new Module(2, 'load_balancer', 'BALANCER BLADE-01 [SLOT 2]', w * 0.1, 140, w * 0.35, 55));
+                modules.push(new Module(3, 'firewall', 'FIREWALL ASIC-01 [SLOT 3]', w * 0.55, 140, w * 0.35, 55));
+            }
+
+            // Bottom Core Database Mainframe Server
+            modules.push(new Module(4, 'mainframe_db', 'CORE MAIN DATABASE [SLOT 4]', w * 0.1, 250, w * 0.8, 55));
+
+            layoutRackModules();
+            renderThermalMonitors();
+        }
+
+        function layoutRackModules() {
+            const w = canvas.width;
+            const bladeStartY = 140;
+            const bladeRowGap = 75;
+            const bladeWidth = w * 0.35;
+
+            const balancers = modules.filter(m => m.type === 'load_balancer');
+            const firewalls = modules.filter(m => m.type === 'firewall');
+            const rowCount = Math.max(balancers.length, firewalls.length, 1);
+
+            modules.forEach(m => {
+                if (m.type === 'wan_gateway') {
+                    m.x = w * 0.1;
+                    m.y = 40;
+                    m.w = w * 0.8;
+                } else if (m.type === 'mainframe_db') {
+                    m.x = w * 0.1;
+                    m.y = bladeStartY + (rowCount * bladeRowGap) + 35;
+                    m.w = w * 0.8;
+                }
+            });
+
+            balancers.forEach((m, index) => {
+                if (m.customPosition) return;
+                m.x = w * 0.1;
+                m.y = bladeStartY + (index * bladeRowGap);
+                m.w = bladeWidth;
+            });
+
+            firewalls.forEach((m, index) => {
+                if (m.customPosition) return;
+                m.x = w * 0.55;
+                m.y = bladeStartY + (index * bladeRowGap);
+                m.w = bladeWidth;
+            });
+        }
+
+        function setCableColor(color) {
+            patchCableColor = color;
+            audio.init();
+            audio.playBeep(true);
+
+            // Toggle active border styling
+            const map = {
+                '#3b82f6': 'col-blue',
+                '#eab308': 'col-yellow',
+                '#a855f7': 'col-purple',
+                '#ec4899': 'col-pink',
+                '#10b981': 'col-emerald'
+            };
+            Object.values(map).forEach(btnId => {
+                document.getElementById(btnId).classList.remove('border-slate-100');
+                document.getElementById(btnId).classList.add('border-transparent');
+            });
+            document.getElementById(map[color]).classList.remove('border-transparent');
+            document.getElementById(map[color]).classList.add('border-slate-100');
+        }
+
+        // ==========================================
+        // FLOW DRIVERS & THREAT WAVES
+        // ==========================================
+        function startGame() {
+            audio.init();
+            document.getElementById('overlay-start').style.display = 'none';
+            appState = 'playing';
+
+            // Reset scores
+            score = 0;
+            credits = 600;
+            systemIntegrity = 100;
+            nitrogenPower = 100;
+            currentWave = 1;
+            wavePhase = 'prep';
+            waveTimer = 0;
+            waveSpawnTicker = 0;
+            threatLevel = 1.0;
+            activeThreatEvent = null;
+            activeEvent = null;
+            eventTriggeredThisWave = false;
+            eventSpawnTicker = 0;
+            lastNoRouteWarningAt = 0;
+            lastNoOutputWarningAt = 0;
+            waveBuffPending = false;
+            bonusCableCapacity = 0;
+            abilityCooldownMultiplier = 1;
+            Object.values(abilities).forEach(ability => {
+                ability.activeUntil = 0;
+                ability.cooldownUntil = 0;
+            });
+            document.getElementById('overlay-buff').classList.add('hidden');
+            document.getElementById('overlay-buff').classList.remove('flex');
+
+            statsCleanDelivered = 0;
+            statsMalwareBlocks = 0;
+            statsCordsSevered = 0;
+
+            loadTopology();
+            updateShopHUD();
+            updateEventHUD();
+            updateAbilityHUD();
+            updateSkipPrepButton();
+            logIDS('// PREP WINDOW ACTIVE // PATCH ROUTES BEFORE TRAFFIC ARRIVES', 'cyan');
+        }
+
+        function restartGame() {
+            document.getElementById('overlay-gameover').classList.add('hidden');
+            startGame();
+        }
+
+        function backToMenu() {
+            document.getElementById('overlay-gameover').classList.add('hidden');
+            document.getElementById('overlay-start').style.display = 'flex';
+            appState = 'menu';
+            updateSkipPrepButton();
+        }
+
+        function triggerGameOver() {
+            appState = 'gameover';
+            audio.playExplode();
+            document.getElementById('overlay-gameover').classList.remove('hidden');
+
+            document.getElementById('stat-routed').innerText = statsCleanDelivered;
+            document.getElementById('stat-zapped').innerText = statsMalwareBlocks;
+            document.getElementById('stat-severed').innerText = statsCordsSevered;
+            document.getElementById('stat-wave').innerText = currentWave;
+        }
+
+        function triggerNitrogenBlast() {
+            audio.init();
+            if (nitrogenPower < 25) {
+                logIDS('[N₂ CRYOGEN] Nitrogen levels low. Allow tanks to recharge.', 'rose');
+                audio.playBeep(false);
+                return;
+            }
+
+            nitrogenPower -= 25;
+            audio.playNitrogen();
+            
+            // Instantly cool all components down
+            modules.forEach(m => {
+                m.temp = 30.0;
+                createExplosion(m.x + m.w/2, m.y + m.h/2, '#38bdf8', 15);
+            });
+
+            logIDS('[CRYO-VENT] Nitrogen venting successful! All module temperatures dropped to 30°C.', 'cyan');
+            floatingText('RACK COOL BLAST', canvas.width/2, canvas.height/2, '#38bdf8');
+        }
+
+        function activateAbility(key) {
+            audio.init();
+            const ability = abilities[key];
+            if (!ability) return;
+
+            const now = Date.now();
+            if (now < ability.cooldownUntil) {
+                const remaining = Math.ceil((ability.cooldownUntil - now) / 1000);
+                logIDS(`[ABILITY] ${ability.title} cooling down (${remaining}s).`, 'amber');
+                audio.playBeep(false);
+                return;
+            }
+
+            ability.activeUntil = now + ability.duration * 1000;
+            ability.cooldownUntil = now + (ability.duration + ability.cooldown * abilityCooldownMultiplier) * 1000;
+
+            if (key === 'hotSwap') {
+                floatingText('HOT-SWAP ONLINE', canvas.width / 2, canvas.height - 120, '#ff2bd6');
+                logIDS('[ABILITY] Hot-Swap Gloves active: unplugging cables dumps fewer packets and ignores port lockdowns.', 'cyan');
+            } else if (key === 'firewallOverclock') {
+                floatingText('FIREWALL OVERCLOCK', canvas.width / 2, canvas.height - 120, '#fbbf24');
+                logIDS('[ABILITY] Firewall Overclock active: shredding is faster, but firewall heat rises.', 'amber');
+            } else if (key === 'diagnosticLens') {
+                floatingText('DIAGNOSTIC LENS', canvas.width / 2, canvas.height - 120, '#38f8ff');
+                logIDS('[ABILITY] Diagnostic Lens active: open inputs and key WAN outputs are highlighted.', 'cyan');
+            }
+
+            audio.playZap();
+            updateAbilityHUD();
+        }
+
+        function updateAbilityHUD() {
+            const now = Date.now();
+            Object.entries(abilities).forEach(([key, ability]) => {
+                const btn = document.getElementById(`ability-${key}`);
+                if (!btn) return;
+                const activeRemaining = Math.ceil((ability.activeUntil - now) / 1000);
+                const cooldownRemaining = Math.ceil((ability.cooldownUntil - now) / 1000);
+
+                if (activeRemaining > 0) {
+                    btn.innerText = `${ability.title} // ${activeRemaining}s`;
+                    btn.classList.add('animate-pulse');
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else if (cooldownRemaining > 0) {
+                    btn.innerText = `${ability.title} // ${cooldownRemaining}s`;
+                    btn.classList.remove('animate-pulse');
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    btn.innerText = ability.title === 'HOT-SWAP' ? 'HOT-SWAP GLOVES' : (ability.title === 'FW OVERCLOCK' ? 'FIREWALL OVERCLOCK' : 'DIAGNOSTIC LENS');
+                    btn.classList.remove('animate-pulse', 'opacity-50', 'cursor-not-allowed');
+                }
+            });
+
+            const activeNames = Object.values(abilities)
+                .filter(a => now < a.activeUntil)
+                .map(a => a.title);
+            const status = document.getElementById('ability-status');
+            if (status) {
+                status.innerText = activeNames.length ? `Active: ${activeNames.join(', ')}` : 'Abilities ready. Cooldowns begin after use.';
+            }
+        }
+
+        function chooseWaveBuff(key) {
+            const overlay = document.getElementById('overlay-buff');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            waveBuffPending = false;
+
+            if (key === 'cableCapacity') {
+                bonusCableCapacity++;
+                logIDS(`[BUFF] Patch Reel installed. Cable capacity bonus is now +${bonusCableCapacity}.`, 'emerald');
+                floatingText('+1 CABLE CAP', canvas.width / 2, canvas.height / 2, '#38f8ff');
+            } else if (key === 'coolant') {
+                nitrogenPower = Math.min(100, nitrogenPower + 35);
+                modules.forEach(m => m.temp = Math.max(30, m.temp - 10));
+                logIDS('[BUFF] Coolant Cache loaded. N₂ reserve restored and modules chilled.', 'emerald');
+                floatingText('COOLANT CACHE', canvas.width / 2, canvas.height / 2, '#38f8ff');
+            } else if (key === 'cooldowns') {
+                abilityCooldownMultiplier = Math.max(0.55, abilityCooldownMultiplier * 0.8);
+                logIDS('[BUFF] Tactical Macros installed. Panic cooldowns reduced.', 'emerald');
+                floatingText('COOLDOWNS -20%', canvas.width / 2, canvas.height / 2, '#f0ff4f');
+            }
+
+            audio.playBeep(true);
+            updateAbilityHUD();
+        }
+
+        function runWaveEngine() {
+            const phaseDuration = wavePhaseDurations[wavePhase];
+            waveTimer += 0.016;
+            updateSkipPrepButton();
+
+            const currentPct = (waveTimer / phaseDuration) * 100;
+            document.getElementById('wave-progress').style.width = `${Math.min(currentPct, 100)}%`;
+
+            const remaining = Math.max(0, phaseDuration - waveTimer);
+            const m = Math.floor(remaining / 60);
+            const s = Math.floor(remaining % 60);
+            const phaseLabel = wavePhase.toUpperCase();
+            document.getElementById('wave-timer-text').innerText = `${phaseLabel} ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+            const titles = {
+                1: 'WAVE 1: INITIAL PROBING ATTEMPTS',
+                2: 'WAVE 2: SYN FLOOD THREAT ENVELOPE',
+                3: 'WAVE 3: PERSISTENT INTRUSIONS',
+                4: 'WAVE 4: BOTNET MELTDOWN PHASING',
+                5: 'WAVE 5: CRYPTO-LOCK OVERLOAD CONGESTION'
+            };
+            const baseTitle = titles[currentWave] || `WAVE ${currentWave}: EXTREME OVERLOAD`;
+            document.getElementById('wave-title').innerText = `${phaseLabel} // ${baseTitle}`;
+
+            if (wavePhase === 'active') {
+                waveSpawnTicker++;
+                maybeStartChaosEvent();
+                updateChaosEvent();
+
+                // Spawning rate algorithm
+                const eventSpawnPressure = activeEvent?.id === 'portSurge' ? 34 : 0;
+                const baseInterval = 150 - (currentWave * 22) - eventSpawnPressure;
+                const interval = Math.max(38, baseInterval);
+
+                if (waveSpawnTicker >= interval) {
+                    waveSpawnTicker = 0;
+                    spawnHardwareTraffic();
+                }
+            }
+
+            if (waveTimer >= phaseDuration) {
+                advanceWavePhase();
+            }
+
+            updateEventHUD();
+
+            // Nitrogen recharge ticker
+            if (nitrogenPower < 100) {
+                nitrogenPower += 0.04;
+                document.getElementById('cooling-bar').style.width = `${nitrogenPower}%`;
+                document.getElementById('cooling-txt').innerText = `${Math.floor(nitrogenPower)}% N₂ CHARGE`;
+            }
+        }
+
+        function advanceWavePhase() {
+            waveTimer = 0;
+            waveSpawnTicker = 0;
+
+            if (wavePhase === 'prep') {
+                wavePhase = 'active';
+                activeEvent = null;
+                eventTriggeredThisWave = false;
+                eventSpawnTicker = 0;
+                floatingText('TRAFFIC LIVE', canvas.width / 2, 90, '#f0ff4f');
+                logIDS(`[WAVE] Wave ${currentWave} traffic is live. Maintain routes manually.`, 'cyan');
+                audio.playBeep(true);
+                return;
+            }
+
+            if (wavePhase === 'active') {
+                wavePhase = 'recovery';
+                clearChaosEvent();
+                credits += 250; // Completion bonus
+                waveBuffPending = true;
+                const buffOverlay = document.getElementById('overlay-buff');
+                buffOverlay.classList.remove('hidden');
+                buffOverlay.classList.add('flex');
+                floatingText('RECOVERY +$250', canvas.width/2, canvas.height/2, '#39ff88');
+                logIDS(`[SUCCESS] Wave ${currentWave} contained. Recovery window open (+$250).`, 'emerald');
+                audio.playBeep(true);
+                return;
+            }
+
+            currentWave++;
+            threatLevel += 0.3;
+            wavePhase = 'prep';
+            if (waveBuffPending) {
+                chooseWaveBuff('coolant');
+            }
+            activeEvent = null;
+            eventTriggeredThisWave = false;
+            eventSpawnTicker = 0;
+            packets = [];
+            connections.forEach(c => c.traffic = []);
+            floatingText(`PREP WAVE ${currentWave}`, canvas.width/2, 90, '#38f8ff');
+            logIDS(`[PREP] Wave ${currentWave} staging. Rewire before the next traffic burst.`, 'cyan');
+        }
+
+        function maybeStartChaosEvent() {
+            if (activeEvent || eventTriggeredThisWave || waveTimer < 8) return;
+            eventTriggeredThisWave = true;
+            const pool = currentWave === 1
+                ? ['portSurge', 'ddosRain', 'heatBloom']
+                : ['portSurge', 'brownout', 'ddosRain', 'portLockdown', 'heatBloom'];
+            startChaosEvent(pool[Math.floor(Math.random() * pool.length)]);
+        }
+
+        function startChaosEvent(id) {
+            const wanModule = modules.find(m => m.type === 'wan_gateway');
+            const activeWanPorts = wanModule ? wanModule.ports.filter(p => p.type === 'OUT') : [];
+            const connectedPorts = getAllPorts().filter(p => p.connectedCable);
+
+            const eventConfig = {
+                portSurge: {
+                    title: 'PORT SURGE',
+                    detail: 'One WAN output is spiking. Split that line before it saturates.',
+                    duration: 16,
+                    color: '#ff2bd6',
+                    targetPort: activeWanPorts[Math.floor(Math.random() * activeWanPorts.length)]
+                },
+                brownout: {
+                    title: 'BROWNOUT',
+                    detail: 'One rack side is underpowered. Traffic through it slows down.',
+                    duration: 18,
+                    color: '#f59e0b',
+                    side: Math.random() < 0.5 ? 'left' : 'right'
+                },
+                ddosRain: {
+                    title: 'DDOS RAIN',
+                    detail: 'Every live WAN line is shedding hostile packets.',
+                    duration: 14,
+                    color: '#ff2d55'
+                },
+                portLockdown: {
+                    title: 'PORT LOCKDOWN',
+                    detail: 'A connected port is jammed. Route around it until it releases.',
+                    duration: 14,
+                    color: '#ff2d55',
+                    targetPort: connectedPorts[Math.floor(Math.random() * connectedPorts.length)]
+                },
+                heatBloom: {
+                    title: 'CABLE HEAT BLOOM',
+                    detail: 'Stressed cables bleed heat into nearby blades.',
+                    duration: 18,
+                    color: '#f97316'
+                }
+            }[id];
+
+            if (!eventConfig) return;
+            if (id === 'portLockdown' && !eventConfig.targetPort) {
+                startChaosEvent('heatBloom');
+                return;
+            }
+
+            activeEvent = { id, elapsed: 0, tick: 0, ...eventConfig };
+
+            if (activeEvent.id === 'portLockdown' && activeEvent.targetPort) {
+                activeEvent.targetPort.lockedUntil = Date.now() + (activeEvent.duration * 1000);
+            }
+
+            logIDS(`[EVENT] ${activeEvent.title}: ${activeEvent.detail}`, activeEvent.id === 'brownout' || activeEvent.id === 'heatBloom' ? 'amber' : 'rose');
+            floatingText(activeEvent.title, canvas.width / 2, 110, activeEvent.color);
+            audio.playAlarm();
+            updateEventHUD();
+        }
+
+        function updateChaosEvent() {
+            if (!activeEvent) return;
+            activeEvent.elapsed += 0.016;
+            activeEvent.tick++;
+
+            if (activeEvent.id === 'ddosRain' && activeEvent.tick % 34 === 0) {
+                spawnDdosRain();
+            } else if (activeEvent.id === 'heatBloom' && activeEvent.tick % 26 === 0) {
+                applyCableHeatBloom();
+            } else if (activeEvent.id === 'portSurge' && activeEvent.targetPort && activeEvent.tick % 42 === 0) {
+                const pos = activeEvent.targetPort.getAbsoluteCoords();
+                createSparks(pos.x, pos.y, '#ff2bd6', 3);
+            }
+
+            if (activeEvent.elapsed >= activeEvent.duration) {
+                clearChaosEvent();
+            }
+        }
+
+        function skipPrepPhase() {
+            if (appState !== 'playing' || wavePhase !== 'prep') return;
+            logIDS('[WAVE] Prep skipped. Traffic released manually.', 'cyan');
+            advanceWavePhase();
+        }
+
+        function updateSkipPrepButton() {
+            const btn = document.getElementById('btn-skip-prep');
+            if (!btn) return;
+            if (appState === 'playing' && wavePhase === 'prep') {
+                btn.classList.remove('hidden');
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
+
+        function clearChaosEvent() {
+            if (activeEvent?.id === 'portLockdown' && activeEvent.targetPort) {
+                activeEvent.targetPort.lockedUntil = 0;
+            }
+            if (activeEvent) {
+                logIDS(`[EVENT] ${activeEvent.title} cleared.`, 'emerald');
+            }
+            activeEvent = null;
+            updateEventHUD();
+        }
+
+        function updateEventHUD() {
+            const title = document.getElementById('event-title');
+            const detail = document.getElementById('event-detail');
+            const countdown = document.getElementById('event-countdown');
+            const progress = document.getElementById('event-progress');
+            const panel = document.getElementById('event-panel');
+            if (!title || !detail || !countdown || !progress || !panel) return;
+
+            if (!activeEvent) {
+                title.innerText = wavePhase === 'active' ? 'EVENT BUS ARMED' : 'NO ACTIVE EVENT';
+                detail.innerText = wavePhase === 'active' ? 'Watching for rack instability.' : 'Rack noise nominal.';
+                countdown.innerText = '--';
+                progress.style.width = '0%';
+                progress.style.background = '#64748b';
+                panel.className = 'bg-slate-900 border border-slate-800 rounded p-3 flex flex-col gap-2';
+                return;
+            }
+
+            const remaining = Math.max(0, activeEvent.duration - activeEvent.elapsed);
+            title.innerText = activeEvent.title;
+            detail.innerText = activeEvent.detail;
+            countdown.innerText = `${Math.ceil(remaining)}s`;
+            progress.style.width = `${Math.min((activeEvent.elapsed / activeEvent.duration) * 100, 100)}%`;
+            progress.style.background = activeEvent.color;
+            panel.className = 'bg-slate-900 border border-fuchsia-500/50 rounded p-3 flex flex-col gap-2 shadow shadow-fuchsia-500/20';
+        }
+
+        function spawnHardwareTraffic() {
+            // Find Top WAN Module
+            const wanModule = modules.find(m => m.type === 'wan_gateway');
+            if (!wanModule) return;
+
+            // Generate packet on one of the connected output ports of WAN
+            const activeWanCables = connections.filter(c => c.source.parent === wanModule);
+            if (activeWanCables.length === 0) {
+                if (Date.now() - lastNoRouteWarningAt > 1800) {
+                    lastNoRouteWarningAt = Date.now();
+                    logIDS('[WARNING] WAN has no patch cables. Incoming traffic is piling up.', 'amber');
+                    floatingText('PATCH WAN OUTPUTS', wanModule.x + wanModule.w / 2, wanModule.y - 10, '#f59e0b');
+                }
+                return;
+            }
+
+            // Select a random cable, unless an event is forcing pressure onto one port
+            let targetCable = activeWanCables[Math.floor(Math.random() * activeWanCables.length)];
+            if (activeEvent?.id === 'portSurge' && activeEvent.targetPort?.connectedCable) {
+                targetCable = activeEvent.targetPort.connectedCable;
+            }
+
+            // Probabilities shift based on current wave level
+            const r = Math.random();
+            let packType = 'good';
+
+            let malwareChance = 0.22 + (currentWave * 0.08); // level increases hazard chance
+            if (activeThreatEvent === 'ddos' || activeEvent?.id === 'ddosRain') malwareChance = 0.75;
+            if (activeEvent?.id === 'portSurge') malwareChance += 0.1;
+
+            if (r < malwareChance) {
+                const subR = Math.random();
+                if (subR < 0.22 && currentWave >= 3) packType = 'ransomware';
+                else if (subR < 0.45 && currentWave >= 2) packType = 'ddos';
+                else packType = 'malware';
+            }
+
+            const activeCableLimit = getCableBandwidthLimit();
+            if (targetCable.traffic.length < activeCableLimit) {
+                const pack = new Packet(targetCable, packType);
+                targetCable.traffic.push(pack);
+                packets.push(pack);
+                
+                // Add minor heat step to dispatch module
+                wanModule.updateThermals(0.5);
+            } else if (Date.now() - lastNoRouteWarningAt > 1800) {
+                lastNoRouteWarningAt = Date.now();
+                logIDS(`[WARNING] Cable ${targetCable.id} is saturated. Split traffic or upgrade cable bandwidth.`, 'amber');
+                floatingText('CABLE SATURATED', targetCable.getPointAt(0.5).x, targetCable.getPointAt(0.5).y - 10, '#f59e0b');
+            }
+        }
+
+        function spawnDdosRain() {
+            const wanModule = modules.find(m => m.type === 'wan_gateway');
+            if (!wanModule) return;
+            const activeWanCables = connections.filter(c => c.source.parent === wanModule);
+            activeWanCables.forEach(cable => {
+                if (cable.traffic.length >= getCableBandwidthLimit()) return;
+                const pack = new Packet(cable, Math.random() < 0.72 ? 'ddos' : 'malware');
+                pack.speed *= 0.85;
+                cable.traffic.push(pack);
+                packets.push(pack);
+            });
+            if (activeWanCables.length > 0) {
+                floatingText('DDOS RAIN', wanModule.x + wanModule.w / 2, wanModule.y - 10, '#ff2d55');
+            }
+        }
+
+        function applyCableHeatBloom() {
+            const cableLimit = getCableBandwidthLimit();
+            connections.forEach(cable => {
+                if (cable.traffic.length / cableLimit < 0.65) return;
+                const hotPoint = cable.getPointAt(0.5);
+                modules.forEach(m => {
+                    const closestX = Math.max(m.x, Math.min(hotPoint.x, m.x + m.w));
+                    const closestY = Math.max(m.y, Math.min(hotPoint.y, m.y + m.h));
+                    const dist = Math.hypot(hotPoint.x - closestX, hotPoint.y - closestY);
+                    if (dist < 90) {
+                        m.temp += 0.45;
+                        createSparks(hotPoint.x, hotPoint.y, '#f97316', 1);
+                    }
+                });
+            });
+        }
+
+        function triggerIntrusionEvent() {
+            const types = ['ddos', 'blackout', 'meltdown'];
+            const chosen = types[Math.floor(Math.random() * types.length)];
+
+            activeThreatEvent = chosen;
+            activeThreatTimer = 18;
+
+            if (chosen === 'ddos') {
+                logIDS('[WARNING] CRITICAL SYN-FLOOD DDOS DETECTED AT PORT-BAYS!', 'rose');
+                floatingText('!!! DDOS FLOOD INCOMING !!!', canvas.width/2, 110, '#f43f5e');
+                audio.playAlarm();
+            } else if (chosen === 'blackout') {
+                logIDS('[WARNING] COMPONENT BLACKOUT: SHIELD BREAKDOWN! FW OFFLINE.', 'rose');
+                // Trip firewalls offline
+                modules.forEach(m => {
+                    if (m.type === 'firewall') {
+                        m.temp = 95.0; // Instantly overheat
+                        createExplosion(m.x + m.w/2, m.y + m.h/2, '#f43f5e', 15);
+                    }
+                });
+                audio.playExplode();
+            } else if (chosen === 'meltdown') {
+                logIDS('[WARNING] INTRUSIONS DETECTED ON SYSTEM ROUTING BUS!', 'rose');
+                audio.playAlarm();
+            }
+        }
+
+        function lockRandomModule() {
+            // Target a non-mainframe blade to overheat instantly
+            const victims = modules.filter(m => m.type !== 'wan_gateway' && m.type !== 'mainframe_db');
+            if (victims.length > 0) {
+                const vic = victims[Math.floor(Math.random() * victims.length)];
+                vic.temp = 99.0;
+                createExplosion(vic.x + vic.w/2, vic.y + vic.h/2, '#a855f7', 14);
+                logIDS(`[ATTACK] Ransomware trigger: Overheating ${vic.label}!`, 'rose');
+            }
+        }
+
+        // ==========================================
+        // UPGRADES & PURCHASING CONTROLLER
+        // ==========================================
+        function buyUpgrade(key) {
+            audio.init();
+            const upgradeInst = upgrades[key];
+            if (upgradeInst.level >= upgradeInst.max) return;
+
+            if (credits < upgradeInst.cost) {
+                logIDS('[SHOP] Insufficient security budget for upgrade.', 'rose');
+                audio.playBeep(false);
+                return;
+            }
+
+            credits -= upgradeInst.cost;
+            upgradeInst.level++;
+            upgradeInst.cost = Math.floor(upgradeInst.cost * 1.5);
+
+            audio.playSnap();
+            logIDS(`[SHOP] Upgraded ${upgradeInst.title} to Level ${upgradeInst.level}`, 'emerald');
+            updateShopHUD();
+        }
+
+        function buyBlade(type) {
+            audio.init();
+            const moduleType = type === 'firewall' ? 'firewall' : 'load_balancer';
+            const cost = moduleType === 'firewall' ? 300 : 250;
+            if (credits < cost) {
+                logIDS('[SHOP] Insufficient budget for hardware blade.', 'rose');
+                audio.playBeep(false);
+                return;
+            }
+
+            // Cap the maximum active units on rack to prevent overlap
+            const existingCount = modules.filter(m => m.type === moduleType).length;
+            if (existingCount >= 3) {
+                logIDS(`[SHOP] Max limit of (3) reached for ${moduleType.toUpperCase()} blades!`, 'rose');
+                audio.playBeep(false);
+                return;
+            }
+
+            credits -= cost;
+
+            // Compute dynamic rack slot position vertically between WAN and Mainframe
+            const startY = 140;
+            const slotOffset = existingCount * 45;
+            const finalY = startY + slotOffset;
+
+            const w = canvas.width;
+            const bladeNumber = String(existingCount + 1).padStart(2, '0');
+            const labelStr = moduleType === 'firewall' ? `FIREWALL ASIC-${bladeNumber} [SLOT 3]` : `BALANCER BLADE-${bladeNumber} [SLOT 2]`;
+            const moduleWidth = w * 0.35;
+            // Place side by side depending on type
+            const finalX = moduleType === 'firewall' ? w * 0.55 : w * 0.1;
+
+            const newModule = new Module(modules.length + 1, moduleType, labelStr, finalX, finalY, moduleWidth, 55);
+            modules.push(newModule);
+            layoutRackModules();
+
+            audio.playSnap();
+            createExplosion(finalX + moduleWidth/2, finalY + 27, moduleType === 'firewall' ? '#fbbf24' : '#22d3ee', 12);
+            logIDS(`[SHOP] Deployed dynamic rack blade: ${labelStr}`, 'emerald');
+
+            updateShopHUD();
+            renderThermalMonitors();
+        }
+
+        function updateShopHUD() {
+            document.getElementById('credits-display').innerText = `$${credits}`;
+            document.getElementById('score-display').innerText = score;
+
+            // Upgrades cards
+            for (const key in upgrades) {
+                const upgradeInst = upgrades[key];
+                const btn = document.getElementById(`shop-${key}`);
+                const costSpan = document.getElementById(`cost-${key}`);
+                const lvlContainer = document.getElementById(`level-${key}`);
+
+                if (upgradeInst.level >= upgradeInst.max) {
+                    costSpan.innerText = 'MAX LEVEL';
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    costSpan.innerText = `$${upgradeInst.cost}`;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                // Visual tier dots
+                let dots = '';
+                for (let i = 1; i <= upgradeInst.max; i++) {
+                    if (i <= upgradeInst.level) {
+                        dots += '<div class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow shadow-cyan-400/50"></div>';
+                    } else {
+                        dots += '<div class="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700"></div>';
+                    }
+                }
+                lvlContainer.innerHTML = dots;
+            }
+        }
+
+        // Render diagnostics list on telemetry monitor
+        function renderThermalMonitors() {
+            let html = '';
+            modules.forEach(m => {
+                const tempPct = m.temp / m.maxTemp;
+                const tempColor = m.temp >= 85 ? 'text-rose-500' : (m.temp >= 60 ? 'text-amber-500' : 'text-cyan-400');
+                
+                html += `
+                    <div class="flex flex-col gap-1 border-b border-slate-900 pb-1">
+                        <div class="flex justify-between items-center font-mono text-[10px]">
+                            <span class="truncate text-slate-300">${m.label}</span>
+                            <span class="${tempColor} font-bold">${m.temp.toFixed(1)}°C</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-1 rounded overflow-hidden">
+                            <div class="h-full bg-cyan-500 ${m.temp >= 85 ? 'bg-rose-500' : (m.temp >= 60 ? 'bg-amber-500' : 'bg-cyan-500')}" style="width: ${Math.min(tempPct * 100, 100)}%;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            thermalMonitor.innerHTML = html;
+        }
+
+        // ==========================================
+        // INPUT EVENTS (Patch Cable Drafting)
+        // ==========================================
+        canvas.addEventListener('mousedown', onMouseDown);
+        canvas.addEventListener('mousemove', onMouseMove);
+        canvas.addEventListener('mouseup', onMouseUp);
+        canvas.addEventListener('mouseleave', () => {
+            hoveredPort = null;
+            hoveredModule = null;
+            draggingModule = null;
+            isSlicing = false;
+            slicePath = [];
+        });
+
+        // Touch triggers
+        canvas.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            onMouseDown(adaptTouchEvent(t));
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            const t = e.touches[0];
+            onMouseMove(adaptTouchEvent(t));
+        });
+        canvas.addEventListener('touchend', (e) => {
+            onMouseUp(e);
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Shift') {
+                isShiftHeld = true;
+                setTool('slice');
+            } else if (appState === 'playing' && e.key.toLowerCase() === 'h') {
+                activateAbility('hotSwap');
+            } else if (appState === 'playing' && e.key.toLowerCase() === 'f') {
+                activateAbility('firewallOverclock');
+            } else if (appState === 'playing' && e.key.toLowerCase() === 'd') {
+                activateAbility('diagnosticLens');
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') {
+                isShiftHeld = false;
+                setTool('link');
+            }
+        });
+
+        function adaptTouchEvent(touch) {
+            return {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+                button: 0,
+                preventDefault: () => {}
+            };
+        }
+
+        function getMouseCoord(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function onMouseDown(e) {
+            if (appState !== 'playing') return;
+            audio.init();
+
+            const coords = getMouseCoord(e);
+            mousePos = coords;
+            hoveredPort = checkPortClick(coords.x, coords.y);
+            hoveredModule = checkModuleClick(coords.x, coords.y);
+
+            // Check if click hits any Port
+            const port = hoveredPort;
+            if (port) {
+                if (isPortLocked(port) && !isAbilityActive('hotSwap')) {
+                    logIDS(`[LOCKDOWN] Port ${port.id} is jammed by the active event. Route around it.`, 'rose');
+                    audio.playBeep(false);
+                    return;
+                }
+
+                // If port already has connected cable, unplug/sever it!
+                if (port.connectedCable) {
+                    const doomedCable = port.connectedCable;
+                    const riders = doomedCable.traffic.length;
+                    doomedCable.traffic.forEach(p => packets = packets.filter(pack => pack !== p)); // dump riders
+                    connections = connections.filter(c => c !== doomedCable);
+                    
+                    // clear connections maps
+                    doomedCable.source.connectedCable = null;
+                    doomedCable.target.connectedCable = null;
+                    
+                    statsCordsSevered++;
+                    audio.playCut();
+                    createExplosion(coords.x, coords.y, isAbilityActive('hotSwap') ? '#ff2bd6' : '#f59e0b', isAbilityActive('hotSwap') ? 10 : 5);
+                    if (isAbilityActive('hotSwap')) {
+                        const rebate = riders * 8;
+                        credits += rebate;
+                        floatingText(`HOT-SWAP +$${rebate}`, coords.x, coords.y - 14, '#ff2bd6');
+                        logIDS(`[SYS-PATCH] Hot-swapped cable from ${port.id}. ${riders} in-flight packets safely drained.`, 'cyan');
+                    } else {
+                        logIDS(`[SYS-PATCH] Unplugged cable from port ${port.id}`, 'cyan');
+                    }
+                    return;
+                }
+
+                // Start patch drag line drafting (Must start from an OUT port to target IN port)
+                if (activeTool === 'link' && port.type === 'OUT') {
+                    activePortSelection = port;
+                } else if (port.type === 'IN') {
+                    logIDS('[ROUTING-ERR] Patch cords must be dragged from OUT ports into IN ports!', 'amber');
+                    audio.playBeep(false);
+                }
+            } else {
+                const moduleHit = checkModuleClick(coords.x, coords.y);
+                if (moduleHit && canDragModule(moduleHit) && activeTool === 'link' && wavePhase !== 'active') {
+                    draggingModule = moduleHit;
+                    moduleDragOffset = {
+                        x: coords.x - moduleHit.x,
+                        y: coords.y - moduleHit.y
+                    };
+                    moduleHit.customPosition = true;
+                    floatingText('RACK UNIT RELEASED', moduleHit.x + moduleHit.w / 2, moduleHit.y - 10, '#38f8ff');
+                    return;
+                } else if (moduleHit && wavePhase === 'active') {
+                    logIDS('[RACK] Live rack moves are locked during active traffic. Wait for prep or recovery.', 'amber');
+                    audio.playBeep(false);
+                    return;
+                }
+
+                // Clicked negative space
+                if (activeTool === 'slice') {
+                    isSlicing = true;
+                    slicePath = [coords];
+                }
+            }
+        }
+
+        function onMouseMove(e) {
+            if (appState !== 'playing') return;
+            const coords = getMouseCoord(e);
+            mousePos = coords;
+            hoveredPort = checkPortClick(coords.x, coords.y);
+            hoveredModule = hoveredPort ? null : checkModuleClick(coords.x, coords.y);
+
+            if (draggingModule) {
+                const padding = 12;
+                draggingModule.x = Math.max(padding, Math.min(canvas.width - draggingModule.w - padding, coords.x - moduleDragOffset.x));
+                draggingModule.y = Math.max(105, Math.min(canvas.height - draggingModule.h - 20, coords.y - moduleDragOffset.y));
+                return;
+            }
+
+            if (isSlicing && activeTool === 'slice') {
+                slicePath.push(coords);
+                if (slicePath.length > 8) slicePath.shift();
+
+                checkSlicingIntersection();
+            }
+        }
+
+        function onMouseUp(e) {
+            if (appState !== 'playing') return;
+            const coords = getMouseCoord(e);
+
+            if (draggingModule) {
+                const moved = draggingModule;
+                draggingModule = null;
+                createExplosion(moved.x + moved.w / 2, moved.y + moved.h / 2, '#38f8ff', 5);
+                logIDS(`[RACK] Repositioned ${moved.label}. Cable lengths and crossings updated.`, 'cyan');
+                audio.playSnap();
+            }
+
+            if (activePortSelection) {
+                const targetPort = checkPortClick(coords.x, coords.y);
+                if (targetPort && targetPort !== activePortSelection) {
+                    if (targetPort.type === 'IN') {
+                        // Create physical connection
+                        if (isPortLocked(targetPort) && !isAbilityActive('hotSwap')) {
+                            logIDS(`[LOCKDOWN] Target port ${targetPort.id} is jammed.`, 'rose');
+                            audio.playBeep(false);
+                        } else if (!targetPort.connectedCable) {
+                            const newCable = new PatchCable(
+                                `cable_${connections.length + 1}`,
+                                activePortSelection,
+                                targetPort,
+                                patchCableColor
+                            );
+                            connections.push(newCable);
+                            activePortSelection.connectedCable = newCable;
+                            targetPort.connectedCable = newCable;
+                            
+                            audio.playSnap();
+                            logIDS(`[SYS-PATCH] Connected patch cord between ${activePortSelection.parent.label} and ${targetPort.parent.label}`, 'cyan');
+                        } else {
+                            logIDS('[ROUTING-ERR] Target RJ45 Port is already occupied!', 'amber');
+                            audio.playBeep(false);
+                        }
+                    } else {
+                        logIDS('[ROUTING-ERR] Cables must map OUT to IN ports.', 'amber');
+                        audio.playBeep(false);
+                    }
+                }
+                activePortSelection = null;
+            }
+
+            isSlicing = false;
+            slicePath = [];
+        }
+
+        function checkPortClick(x, y) {
+            let found = null;
+            modules.forEach(m => {
+                m.ports.forEach(p => {
+                    const pos = p.getAbsoluteCoords();
+                    const dx = pos.x - x;
+                    const dy = pos.y - y;
+                    if (Math.sqrt(dx*dx + dy*dy) <= 15) {
+                        found = p;
+                    }
+                });
+            });
+            return found;
+        }
+
+        function checkModuleClick(x, y) {
+            for (let i = modules.length - 1; i >= 0; i--) {
+                const m = modules[i];
+                if (!canDragModule(m)) continue;
+                if (x >= m.x && x <= m.x + m.w && y >= m.y && y <= m.y + m.h) {
+                    return m;
+                }
+            }
+            return null;
+        }
+
+        function checkSlicingIntersection() {
+            if (slicePath.length < 2) return;
+            const p1 = slicePath[slicePath.length - 2];
+            const p2 = slicePath[slicePath.length - 1];
+
+            connections = connections.filter(c => {
+                if (c.intersects(p1.x, p1.y, p2.x, p2.y)) {
+                    // Sever this link
+                    c.traffic.forEach(p => packets = packets.filter(pack => pack !== p)); // delete riding packets
+                    c.source.connectedCable = null;
+                    c.target.connectedCable = null;
+                    
+                    createExplosion((c.source.getAbsoluteCoords().x + c.target.getAbsoluteCoords().x)/2, (c.source.getAbsoluteCoords().y + c.target.getAbsoluteCoords().y)/2, '#f97316', 12);
+                    statsCordsSevered++;
+                    audio.playCut();
+                    logIDS(`[WARNING] Patch cord severed manually by shears!`, 'rose');
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        function updateCableInterference() {
+            connections.forEach(c => c.noiseLevel = 0);
+            for (let i = 0; i < connections.length; i++) {
+                for (let j = i + 1; j < connections.length; j++) {
+                    const a = connections[i];
+                    const b = connections[j];
+                    if (
+                        a.source === b.source ||
+                        a.source === b.target ||
+                        a.target === b.source ||
+                        a.target === b.target
+                    ) {
+                        continue;
+                    }
+
+                    const b1 = b.source.getAbsoluteCoords();
+                    const b2 = b.target.getAbsoluteCoords();
+                    if (a.intersects(b1.x, b1.y, b2.x, b2.y)) {
+                        a.noiseLevel++;
+                        b.noiseLevel++;
+                    }
+                }
+            }
+
+            connections.forEach(cable => {
+                if (cable.noiseLevel <= 0) return;
+                if (Math.random() < 0.018 * cable.noiseLevel) {
+                    const p = cable.getPointAt(0.5);
+                    createSparks(p.x, p.y, '#b84cff', Math.min(3, cable.noiseLevel));
+                }
+                const heatLoad = 0.006 * cable.noiseLevel;
+                cable.source.parent.temp += heatLoad;
+                cable.target.parent.temp += heatLoad;
+            });
+        }
+
+        function drawDiagnosticLens() {
+            ctx.save();
+            ctx.font = 'bold 9px "Share Tech Mono"';
+            modules.forEach(m => {
+                m.ports.forEach(port => {
+                    const pos = port.getAbsoluteCoords();
+                    const openInput = port.type === 'IN' && !port.connectedCable && !isPortLocked(port);
+                    const liveOutput = port.type === 'OUT' && port.connectedCable;
+                    if (!openInput && !liveOutput) return;
+
+                    ctx.beginPath();
+                    ctx.arc(pos.x, pos.y, openInput ? 20 : 17, 0, Math.PI * 2);
+                    ctx.strokeStyle = openInput ? '#38f8ff' : '#39ff88';
+                    ctx.lineWidth = 2;
+                    ctx.shadowBlur = 16;
+                    ctx.shadowColor = openInput ? '#38f8ff' : '#39ff88';
+                    ctx.stroke();
+
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = openInput ? '#38f8ff' : '#39ff88';
+                    ctx.fillText(openInput ? 'OPEN' : 'LIVE', pos.x + 10, pos.y - 10);
+                });
+            });
+            ctx.restore();
+        }
+
+        function setTool(tool) {
+            activeTool = tool;
+            document.getElementById('tool-link').className = tool === 'link' ?
+                'px-4 py-2 bg-cyan-950 border border-cyan-500 text-cyan-200 hover:text-white text-sm font-bold rounded flex items-center gap-2 transition-all' :
+                'px-4 py-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-400 text-sm font-bold rounded flex items-center gap-2 transition-all';
+            document.getElementById('tool-slice').className = tool === 'slice' ?
+                'px-4 py-2 bg-orange-950 border border-orange-500 text-orange-200 hover:text-white text-sm font-bold rounded flex items-center gap-2 transition-all shadow shadow-orange-500/20' :
+                'px-4 py-2 bg-slate-900 border border-slate-800 hover:border-orange-500/50 text-slate-300 hover:text-orange-400 text-sm font-bold rounded flex items-center gap-2 transition-all';
+            audio.init();
+            audio.playBeep(true);
+        }
+
+        // ==========================================
+        // RENDER LOOP & SIMULATION STEPPERS
+        // ==========================================
+        let lastTime = Date.now();
+        function gameLoop() {
+            const now = Date.now();
+            const delta = (now - lastTime) / 1000;
+            lastTime = now;
+
+            // Clear Frame
+            const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            bg.addColorStop(0, '#03040a');
+            bg.addColorStop(0.52, '#070913');
+            bg.addColorStop(1, '#020207');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const glow = ctx.createRadialGradient(canvas.width * 0.5, canvas.height * 0.18, 20, canvas.width * 0.5, canvas.height * 0.18, canvas.width * 0.72);
+            glow.addColorStop(0, 'rgba(236, 72, 153, 0.11)');
+            glow.addColorStop(0.45, 'rgba(34, 211, 238, 0.055)');
+            glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = glow;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Tech grid alignment points
+            ctx.save();
+            ctx.strokeStyle = 'rgba(34, 211, 238, 0.045)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 80) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            ctx.strokeStyle = 'rgba(236, 72, 153, 0.04)';
+            for (let y = 0; y < canvas.height; y += 80) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.12)';
+            for (let x = 20; x < canvas.width; x += 40) {
+                for (let y = 20; y < canvas.height; y += 40) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.restore();
+
+            if (appState === 'playing') {
+                document.getElementById('integrity-bar').style.width = `${systemIntegrity}%`;
+                document.getElementById('integrity-txt').innerText = `${Math.ceil(systemIntegrity)}% INTEGRITY`;
+
+                if (systemIntegrity <= 0) {
+                    triggerGameOver();
+                }
+
+                // Run Waves
+                runWaveEngine();
+
+                // Draw Rack Slot Bays
+                modules.forEach(m => {
+                    m.draw();
+                    
+                    // Module thermal dissipation or active heating step
+                    // Calculate packets currently inside this module's connected cables
+                    const incomingCables = connections.filter(c => c.target.parent === m);
+                    const incomingLoads = incomingCables.reduce((acc, c) => acc + c.traffic.length, 0);
+                    m.updateThermals(incomingLoads);
+
+                    // Firewall scan progress ticker
+                    if (m.type === 'firewall' && m.scanningPacket) {
+                        m.scanProgress += getFirewallSpeedStep();
+                        if (isAbilityActive('firewallOverclock')) {
+                            m.temp += 0.05;
+                            if (Math.random() < 0.08) {
+                                createSparks(m.x + 122, m.y + 25, '#fbbf24', 1);
+                            }
+                        }
+                        if (m.scanProgress >= 1.0) {
+                            // Purge virus successfully
+                            statsMalwareBlocks++;
+                            audio.playZap();
+                            createExplosion(m.x + 120, m.y + 26, '#fbbf24', 8);
+                            floatingText(`+$15 FW-SHRED`, m.x + 120, m.y - 10, '#fbbf24');
+                            credits += 15;
+                            score += 60;
+                            
+                            m.scanningPacket = null;
+                            m.scanProgress = 0;
+                        }
+                    }
+                });
+
+                // Update thermals panels on UI
+                renderThermalMonitors();
+
+                updateCableInterference();
+
+                // Draw Patch Cables
+                connections.forEach(c => c.draw());
+
+                if (isAbilityActive('diagnosticLens')) {
+                    drawDiagnosticLens();
+                }
+
+                // Update & Draw active packets travelling inside cables
+                packets.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+
+                // Particles
+                particles = particles.filter(p => {
+                    p.update();
+                    p.draw();
+                    return p.life > 0;
+                });
+
+                // Dragging Draft line preview
+                if (activePortSelection) {
+                    const startPos = activePortSelection.getAbsoluteCoords();
+                    ctx.save();
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = patchCableColor;
+                    
+                    // Slack preview curve
+                    const midX = (startPos.x + mousePos.x) / 2;
+                    const sagY = Math.max(startPos.y, mousePos.y) + 30;
+
+                    ctx.beginPath();
+                    ctx.moveTo(startPos.x, startPos.y);
+                    ctx.quadraticCurveTo(midX, sagY, mousePos.x, mousePos.y);
+                    
+                    ctx.strokeStyle = patchCableColor;
+                    ctx.lineWidth = 2.5;
+                    ctx.setLineDash([5, 5]);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // Dragging Shears laser path
+                if (isSlicing && slicePath.length > 1) {
+                    ctx.save();
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = '#f97316';
+                    ctx.beginPath();
+                    ctx.moveTo(slicePath[0].x, slicePath[0].y);
+                    for (let i = 1; i < slicePath.length; i++) {
+                        ctx.lineTo(slicePath[i].x, slicePath[i].y);
+                    }
+                    ctx.strokeStyle = '#ea580c';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                updateShopHUD();
+                updateAbilityHUD();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.onload = function() {
+            gameLoop();
+        };
+    </script>
+</body>
+</html>

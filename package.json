@@ -1,0 +1,9 @@
+{
+  "name": "netrunner-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "npx http-server . -p 8765 -c-1",
+    "ngrok": "ngrok http 8765"
+  }
+}
