@@ -12,9 +12,10 @@
         body {
             font-family: 'Rajdhani', sans-serif;
             background:
-                radial-gradient(circle at 18% 12%, rgba(236, 72, 153, 0.18), transparent 26%),
-                radial-gradient(circle at 82% 18%, rgba(34, 211, 238, 0.14), transparent 28%),
-                linear-gradient(135deg, #03040a 0%, #070912 42%, #020308 100%);
+                radial-gradient(circle at 50% 20%, rgba(14, 165, 233, 0.10), transparent 30%),
+                radial-gradient(circle at 82% 84%, rgba(236, 72, 153, 0.10), transparent 28%),
+                radial-gradient(circle at 10% 90%, rgba(202, 138, 4, 0.08), transparent 22%),
+                linear-gradient(135deg, #050403 0%, #09070a 42%, #020202 100%);
             overflow: hidden;
         }
         
@@ -59,8 +60,8 @@
         .grid-bg {
             background-size: 30px 30px;
             background-image: 
-                linear-gradient(to right, rgba(34, 211, 238, 0.09) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(236, 72, 153, 0.065) 1px, transparent 1px);
+                linear-gradient(to right, rgba(34, 211, 238, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(236, 72, 153, 0.025) 1px, transparent 1px);
         }
 
         body::after {
@@ -70,21 +71,29 @@
             pointer-events: none;
             z-index: 25;
             background:
-                linear-gradient(90deg, transparent 0 14%, rgba(34, 211, 238, 0.08) 14.2%, transparent 14.5% 66%, rgba(236, 72, 153, 0.07) 66.2%, transparent 66.5%),
-                radial-gradient(circle at 50% 100%, rgba(34, 211, 238, 0.08), transparent 42%);
+                repeating-linear-gradient(100deg, transparent 0 23px, rgba(255, 255, 255, 0.018) 24px, transparent 26px),
+                radial-gradient(circle at 18% 28%, rgba(245, 158, 11, 0.055) 0 1px, transparent 2px),
+                radial-gradient(circle at 72% 54%, rgba(255, 255, 255, 0.035) 0 1px, transparent 2px),
+                linear-gradient(90deg, transparent 0 14%, rgba(34, 211, 238, 0.035) 14.2%, transparent 14.5% 66%, rgba(236, 72, 153, 0.03) 66.2%, transparent 66.5%),
+                radial-gradient(circle at 50% 100%, rgba(34, 211, 238, 0.035), transparent 42%);
+            background-size: auto, 37px 41px, 53px 47px, auto, auto;
             mix-blend-mode: screen;
+            opacity: 0.78;
         }
 
         header,
         aside,
         main > section > div:last-child {
             background:
-                linear-gradient(180deg, rgba(3, 7, 18, 0.98), rgba(2, 3, 8, 0.95)) !important;
-            box-shadow: inset 0 0 28px rgba(34, 211, 238, 0.055), 0 0 32px rgba(0, 0, 0, 0.45);
+                linear-gradient(180deg, rgba(0, 0, 0, 0.96), rgba(4, 6, 12, 0.88)) !important;
+            box-shadow: inset 0 0 28px rgba(34, 211, 238, 0.035), 0 0 38px rgba(0, 0, 0, 0.8);
         }
 
         header {
+            position: relative;
             border-bottom-color: rgba(34, 211, 238, 0.45) !important;
+            min-height: 64px;
+            clip-path: polygon(0 0, 100% 0, 100% 74%, 98% 100%, 2% 100%, 0 74%);
         }
 
         aside {
@@ -149,6 +158,187 @@
             background: linear-gradient(#22d3ee, #ec4899);
             border-radius: 2px;
         }
+
+        main {
+            background:
+                radial-gradient(circle at 50% 45%, rgba(8, 13, 25, 0.62), transparent 58%),
+                #000;
+        }
+
+        main > section {
+            width: 100%;
+            flex-basis: 100%;
+        }
+
+        main > section > div:first-child {
+            background: #000 !important;
+        }
+
+        main > aside {
+            position: absolute;
+            top: 14px;
+            bottom: 14px;
+            width: 258px !important;
+            padding: 12px !important;
+            gap: 10px !important;
+            border: 1px solid rgba(34, 211, 238, 0.16) !important;
+            background:
+                linear-gradient(180deg, rgba(8, 7, 6, 0.86), rgba(4, 5, 10, 0.74)) !important;
+            clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+        }
+
+        main > aside::before,
+        header::before,
+        main > section > div:last-child::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 5px),
+                radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.08), transparent 18%),
+                radial-gradient(circle at 80% 70%, rgba(0, 0, 0, 0.4), transparent 32%);
+            mix-blend-mode: overlay;
+            opacity: 0.55;
+        }
+
+        main > aside:first-of-type {
+            left: 14px;
+            max-height: calc(100% - 28px);
+        }
+
+        main > aside:last-of-type {
+            right: 14px;
+            max-height: calc(100% - 28px);
+        }
+
+        main > aside h2,
+        main > aside .tracking-wider,
+        main > aside .tracking-widest {
+            letter-spacing: 0.08em;
+        }
+
+        main > aside > div:first-child {
+            border-bottom-color: rgba(34, 211, 238, 0.2) !important;
+            padding-bottom: 6px !important;
+        }
+
+        aside button,
+        #event-panel,
+        #ids-terminal,
+        #thermal-monitor,
+        aside .bg-slate-900,
+        aside .bg-slate-950 {
+            background: rgba(0, 0, 0, 0.52) !important;
+            border-color: rgba(34, 211, 238, 0.12) !important;
+            border-radius: 0 !important;
+        }
+
+        aside button {
+            min-height: 34px;
+            padding-top: 7px !important;
+            padding-bottom: 7px !important;
+        }
+
+        #shop-cableBandwidth > span,
+        #shop-exhaustFans > span,
+        #shop-firewallSpeed > span,
+        #buy-balancer span:nth-child(2),
+        #buy-firewall span:nth-child(2),
+        main > aside:first-of-type .text-\[10px\].text-slate-500:not(#ability-status),
+        main > section > div:last-child .text-xs.flex span:nth-child(1),
+        main > section > div:last-child .text-xs.flex span:nth-child(4) {
+            display: none !important;
+        }
+
+        aside button span.text-xs + span,
+        aside button span.text-\[10px\],
+        aside button > span.text-xs.text-slate-400,
+        aside .text-\[10px\].text-slate-500:not(#ability-status):not(#event-detail) {
+            opacity: 0.68;
+        }
+
+        #ids-terminal {
+            color: #67e8f9;
+            min-height: 150px;
+            max-height: 180px;
+            background:
+                linear-gradient(rgba(34, 211, 238, 0.035) 1px, transparent 1px),
+                rgba(0, 0, 0, 0.68) !important;
+            background-size: 100% 7px;
+            border-color: rgba(34, 211, 238, 0.3) !important;
+            box-shadow: inset 0 0 28px rgba(34, 211, 238, 0.08), 0 0 24px rgba(34, 211, 238, 0.08);
+        }
+
+        main > aside:last-of-type > .flex-1 {
+            flex: 0 0 auto !important;
+        }
+
+        #thermal-monitor {
+            max-height: 82px !important;
+        }
+
+        main > section > div:last-child {
+            position: absolute;
+            left: 50%;
+            bottom: 14px;
+            transform: translateX(-50%);
+            width: min(700px, calc(100% - 590px));
+            min-width: 440px;
+            padding: 8px 12px !important;
+            border: 1px solid rgba(34, 211, 238, 0.18) !important;
+            clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+            background: rgba(0, 0, 0, 0.68) !important;
+        }
+
+        #tool-link,
+        #tool-slice {
+            border-radius: 0 !important;
+            padding: 8px 12px !important;
+        }
+
+        main > section > div:last-child .text-xs.flex {
+            gap: 10px !important;
+            font-size: 10px !important;
+            color: rgba(148, 163, 184, 0.72) !important;
+        }
+
+        #event-panel,
+        main > aside:last-of-type .bg-slate-900 {
+            padding: 9px !important;
+        }
+
+        #wave-title,
+        #event-title {
+            color: #e2e8f0 !important;
+        }
+
+        #overlay-start,
+        #overlay-gameover,
+        #overlay-buff {
+            background:
+                radial-gradient(circle at center, rgba(8, 47, 73, 0.24), transparent 48%),
+                rgba(0, 0, 0, 0.94) !important;
+        }
+
+        #overlay-start .bg-slate-900\/80,
+        #overlay-gameover .bg-slate-900,
+        #overlay-buff .bg-slate-950 {
+            background: rgba(0, 0, 0, 0.78) !important;
+            border-radius: 0 !important;
+            clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+        }
+
+        @media (max-width: 1180px) {
+            main > aside {
+                width: 236px !important;
+            }
+
+            main > section > div:last-child {
+                width: min(640px, calc(100% - 510px));
+                min-width: 380px;
+            }
+        }
     </style>
 </head>
 <body class="select-none text-slate-100 scanlines h-screen w-screen flex flex-col grid-bg">
@@ -161,8 +351,8 @@
                 <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 relative"></div>
             </div>
             <div>
-                <h1 class="text-xl font-bold tracking-widest text-cyan-400 text-glow-cyan">NETDEFEND // DATACENTER MATRIX</h1>
-                <p class="text-xs text-slate-500 font-mono tracking-wider">TACTICAL PHYSICAL PATCHING SIMULATOR</p>
+                <h1 class="text-xl font-bold tracking-widest text-cyan-400 text-glow-cyan">NETDEFEND</h1>
+                <p class="text-xs text-slate-500 font-mono tracking-wider">DARK RACK CONTROL</p>
             </div>
         </div>
 
@@ -186,7 +376,7 @@
 
             <div>
                 <span class="block text-xs text-slate-400 font-mono">BUDGET</span>
-                <span id="credits-display" class="text-2xl font-bold text-emerald-400 tech-font">$600</span>
+                <span id="credits-display" class="text-2xl font-bold text-emerald-400 tech-font">$450</span>
             </div>
 
             <div>
@@ -216,7 +406,7 @@
         <!-- Left Sidebar: Shop, Hardware Modules & Cable Colors -->
         <aside class="w-80 bg-slate-950/90 border-r border-cyan-500/20 p-4 flex flex-col gap-4 z-10 overflow-y-auto shrink-0 select-none">
             <div class="border-b border-slate-800 pb-2">
-                <h2 class="text-sm font-bold text-slate-400 tracking-wider">HARDWARE SHOP & UPGRADES</h2>
+                <h2 class="text-sm font-bold text-slate-400 tracking-wider">ARSENAL</h2>
             </div>
 
             <!-- Shop List -->
@@ -253,7 +443,7 @@
 
                 <!-- Buyable Modules -->
                 <div class="border-t border-slate-800 pt-3 mt-1">
-                    <span class="text-xs font-bold text-slate-400 tracking-wider">EXPAND RACK HARDWARE</span>
+                    <span class="text-xs font-bold text-slate-400 tracking-wider">BLADES</span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
@@ -272,7 +462,7 @@
 
             <!-- Cable Color Palette Selector -->
             <div class="border-t border-slate-800 pt-3 mt-4">
-                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">PATCH CORD STYLE</span>
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">CORDS</span>
                 <div class="flex justify-between gap-2">
                     <button onclick="setCableColor('#3b82f6')" class="w-8 h-8 rounded-full bg-blue-500 border-2 border-slate-100 hover:scale-110 transition-transform cursor-pointer" id="col-blue"></button>
                     <button onclick="setCableColor('#eab308')" class="w-8 h-8 rounded-full bg-yellow-500 border-2 border-transparent hover:scale-110 transition-transform cursor-pointer" id="col-yellow"></button>
@@ -284,7 +474,7 @@
 
             <!-- Nitrogen Cooling Flush Operations -->
             <div class="border-t border-slate-800 pt-3 mt-auto">
-                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">THERMAL SHIELD CONTROLS</span>
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">COOLANT</span>
                 <div class="flex flex-col gap-2">
                     <button onclick="triggerNitrogenBlast()" class="w-full bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 hover:text-white py-2 rounded text-xs font-bold font-mono transition-all">
                         ⚡ EMERGENCY N₂ CRYO-BLAST
@@ -295,7 +485,7 @@
 
             <!-- Active Panic Abilities -->
             <div class="border-t border-slate-800 pt-3">
-                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">PANIC ABILITIES</span>
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">PANIC</span>
                 <div class="flex flex-col gap-2">
                     <button onclick="activateAbility('hotSwap')" id="ability-hotSwap" class="w-full bg-fuchsia-950/30 hover:bg-fuchsia-900/40 border border-fuchsia-500/40 text-fuchsia-300 py-2 rounded text-xs font-bold font-mono transition-all">
                         HOT-SWAP GLOVES
@@ -316,12 +506,15 @@
             <!-- Canvas Simulation Cabinet -->
             <div class="flex-1 relative cursor-crosshair overflow-hidden" id="canvas-container">
                 <canvas id="game-canvas" class="absolute inset-0 w-full h-full block"></canvas>
+                <div id="combat-alert" class="hidden absolute top-5 left-1/2 -translate-x-1/2 z-20 bg-black/70 border border-rose-500/60 px-5 py-2 font-mono text-sm font-bold tracking-widest text-rose-300 shadow-lg shadow-rose-500/20">
+                    ALERT
+                </div>
             </div>
 
             <!-- Controls Footer -->
             <div class="bg-slate-950/95 border-t border-cyan-500/30 px-6 py-3 flex justify-between items-center shrink-0 z-10 gap-4">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-400 font-mono mr-2">TOOL SELECTION:</span>
+                    <span class="text-xs text-slate-400 font-mono mr-2">TOOLS</span>
                     
                     <button id="tool-link" onclick="setTool('link')" class="px-4 py-2 bg-cyan-950 border border-cyan-500 text-cyan-200 hover:text-white text-sm font-bold rounded flex items-center gap-2 transition-all" title="Patch cable: drag from an OUT RJ45 port to an IN RJ45 port">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -350,12 +543,12 @@
         <!-- Right Sidebar: Diagnostics Terminals & Active Module Load Temps -->
         <aside class="w-80 bg-slate-950/90 border-l border-cyan-500/20 p-4 flex flex-col gap-4 z-10 shrink-0 select-none">
             <div class="border-b border-slate-800 pb-2">
-                <h2 class="text-sm font-bold text-slate-400 tracking-wider">LIVE TELEMETRY MONITOR</h2>
+                <h2 class="text-sm font-bold text-slate-400 tracking-wider">COMMS</h2>
             </div>
 
             <!-- Temperature Monitor Panel -->
             <div class="flex flex-col gap-2 bg-slate-950 border border-slate-900 p-3 rounded font-mono text-xs">
-                <span class="text-slate-400 font-bold tracking-widest block border-b border-slate-900 pb-1 mb-1">RACK THERMALS:</span>
+                <span class="text-slate-400 font-bold tracking-widest block border-b border-slate-900 pb-1 mb-1">HEAT</span>
                 <div id="thermal-monitor" class="flex flex-col gap-2 max-h-40 overflow-y-auto">
                     <!-- Loaded dynamically via JS -->
                 </div>
@@ -363,7 +556,7 @@
 
             <!-- Terminal logs -->
             <div class="flex-1 flex flex-col min-h-0">
-                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2 font-mono">INTELLIGENT DIAGNOSTIC LOGS</span>
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2 font-mono">CONSOLE</span>
                 <div id="ids-terminal" class="flex-1 bg-slate-950 border border-slate-900 p-3 rounded font-mono text-xs overflow-y-auto flex flex-col gap-1 text-slate-300">
                     <div class="text-cyan-500">// DATACENTER TELEMETRY ENGINE ON</div>
                     <div class="text-cyan-500">// READY TO MONITORS PORTS...</div>
@@ -372,7 +565,7 @@
 
             <!-- Active Event Monitor -->
             <div class="border-t border-slate-800 pt-3">
-                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">CHAOS EVENT BUS</span>
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">EVENT</span>
                 <div id="event-panel" class="bg-slate-900 border border-slate-800 rounded p-3 flex flex-col gap-2">
                     <div class="flex justify-between items-center gap-3">
                         <span id="event-title" class="text-xs font-bold text-slate-400 font-mono">NO ACTIVE EVENT</span>
@@ -387,7 +580,7 @@
 
             <!-- Active Host Stats -->
             <div class="border-t border-slate-800 pt-3">
-                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">THREAT MATRIX ATTACK WAVE</span>
+                <span class="text-xs font-bold text-slate-400 tracking-wider block mb-2">WAVE</span>
                 <div class="bg-slate-900 border border-slate-800 rounded p-3 text-center flex flex-col justify-center items-center">
                     <span id="wave-title" class="text-sm font-bold text-slate-300">WAVE 1: BOTNET SCANNING</span>
                     <div class="w-full bg-slate-950 h-2 rounded mt-2 relative overflow-hidden">
@@ -397,6 +590,16 @@
                     <button id="btn-skip-prep" onclick="skipPrepPhase()" class="hidden mt-2 w-full bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 py-1 rounded text-[10px] font-bold font-mono transition-all">
                         SKIP PREP // START TRAFFIC
                     </button>
+                    <div class="w-full border-t border-slate-800 mt-3 pt-2 text-left">
+                        <div class="flex justify-between gap-2 items-center">
+                            <span id="directive-title" class="text-[10px] font-bold text-slate-400 font-mono">DIRECTIVE WAITING</span>
+                            <span id="directive-count" class="text-[10px] text-slate-500 font-mono">--</span>
+                        </div>
+                        <div class="w-full bg-slate-950 h-1.5 rounded mt-1 overflow-hidden">
+                            <div id="directive-progress" class="bg-amber-400 h-full transition-all duration-300" style="width: 0%;"></div>
+                        </div>
+                        <div id="directive-detail" class="text-[10px] text-slate-500 mt-1 font-mono leading-tight">Prep routes, then survive the directive.</div>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -781,7 +984,7 @@
 
         // Player metrics
         let score = 0;
-        let credits = 600;
+        let credits = 450;
         let systemIntegrity = 100;
         let nitrogenPower = 100; // emergency venting N₂
 
@@ -828,6 +1031,14 @@
         let eventSpawnTicker = 0;
         let lastNoRouteWarningAt = 0;
         let lastNoOutputWarningAt = 0;
+        let lastManualActionAt = Date.now();
+        let staticTraceCooldownUntil = 0;
+        let activeDirective = null;
+        let manualOpsThisWave = 0;
+        let slicesThisWave = 0;
+        let blocksThisWave = 0;
+        let deliveredThisWave = 0;
+        let directiveFailedThisWave = false;
         let waveBuffPending = false;
         let bonusCableCapacity = 0;
         let abilityCooldownMultiplier = 1;
@@ -1127,6 +1338,7 @@
                 // Track usage load (cable breaks if capacity surpassed)
                 this.capacityLoad = 0;
                 this.noiseLevel = 0;
+                this.tracedUntil = 0;
             }
 
             draw() {
@@ -1139,6 +1351,7 @@
                 const critical = loadRatio >= 0.9;
                 const heatBloom = activeEvent?.id === 'heatBloom' && stressed;
                 const surged = activeEvent?.id === 'portSurge' && this.source === activeEvent.targetPort;
+                const traced = Date.now() < this.tracedUntil;
                 const noisy = this.noiseLevel > 0;
                 const pulse = 0.55 + (Math.sin(Date.now() / 85) * 0.45);
 
@@ -1162,32 +1375,33 @@
                 ctx.moveTo(p1.x, p1.y);
                 ctx.quadraticCurveTo(midX, sagY, p2.x, p2.y);
                 
-                ctx.shadowBlur = noisy ? 20 : (heatBloom ? 22 : (critical || surged ? 18 : (stressed ? 12 : 6)));
-                ctx.shadowColor = noisy ? '#b84cff' : (heatBloom ? '#f97316' : (critical ? '#ff2d55' : (surged ? '#ff2bd6' : (stressed ? '#f0ff4f' : this.color))));
-                ctx.strokeStyle = noisy ? '#b84cff' : (heatBloom ? '#f97316' : (critical ? '#ff2d55' : (surged ? '#ff2bd6' : (stressed ? '#f0ff4f' : this.color))));
-                ctx.lineWidth = critical || surged || heatBloom || noisy ? 4.5 + pulse : (stressed ? 3.5 + (pulse * 0.5) : 2.5);
+                ctx.shadowBlur = traced ? 24 : (noisy ? 20 : (heatBloom ? 22 : (critical || surged ? 18 : (stressed ? 12 : 6))));
+                ctx.shadowColor = traced ? '#ff2d55' : (noisy ? '#b84cff' : (heatBloom ? '#f97316' : (critical ? '#ff2d55' : (surged ? '#ff2bd6' : (stressed ? '#f0ff4f' : this.color)))));
+                ctx.strokeStyle = traced ? '#ff2d55' : (noisy ? '#b84cff' : (heatBloom ? '#f97316' : (critical ? '#ff2d55' : (surged ? '#ff2bd6' : (stressed ? '#f0ff4f' : this.color)))));
+                ctx.lineWidth = critical || surged || heatBloom || noisy || traced ? 4.5 + pulse : (stressed ? 3.5 + (pulse * 0.5) : 2.5);
                 ctx.stroke();
 
-                if (stressed || noisy) {
+                if (stressed || noisy || traced) {
                     ctx.beginPath();
                     ctx.moveTo(p1.x, p1.y);
                     ctx.quadraticCurveTo(midX, sagY, p2.x, p2.y);
-                    ctx.setLineDash(noisy ? [3, 6] : [8, 8]);
-                    ctx.lineDashOffset = -Date.now() / 45;
-                    ctx.strokeStyle = noisy ? '#ffffff' : (critical ? '#ffffff' : '#ff2bd6');
+                    ctx.setLineDash(traced ? [2, 4] : (noisy ? [3, 6] : [8, 8]));
+                    ctx.lineDashOffset = -Date.now() / (traced ? 25 : 45);
+                    ctx.strokeStyle = traced ? '#fbbf24' : (noisy ? '#ffffff' : (critical ? '#ffffff' : '#ff2bd6'));
                     ctx.lineWidth = 1.25;
                     ctx.stroke();
                     ctx.setLineDash([]);
                 }
 
-                if (this.traffic.length > 0 || noisy) {
+                if (this.traffic.length > 0 || noisy || traced) {
                     const labelPos = this.getPointAt(0.5);
                     ctx.shadowBlur = 0;
-                    ctx.fillStyle = noisy ? '#d8b4fe' : (critical ? '#ff2d55' : (stressed ? '#f0ff4f' : '#38f8ff'));
+                    ctx.fillStyle = traced ? '#fbbf24' : (noisy ? '#d8b4fe' : (critical ? '#ff2d55' : (stressed ? '#f0ff4f' : '#38f8ff')));
                     ctx.font = 'bold 9px "Share Tech Mono"';
                     const loadText = this.traffic.length > 0 ? `${this.traffic.length}/${cableLimit}` : '';
                     const noiseText = noisy ? ` NOISE x${this.noiseLevel}` : '';
-                    ctx.fillText(`${loadText}${noiseText}`, labelPos.x + 6, labelPos.y - 5);
+                    const traceText = traced ? ' TRACE' : '';
+                    ctx.fillText(`${loadText}${noiseText}${traceText}`, labelPos.x + 6, labelPos.y - 5);
                 }
 
                 // Spark sparks if cable is reaching limit
@@ -1314,10 +1528,11 @@
                 if (targetModule.type === 'mainframe_db') {
                     // Mainframe Database absorption
                     if (this.type === 'good') {
-                        const reward = 25;
+                        const reward = 10;
                         credits += reward;
-                        score += 150;
+                        score += 125;
                         statsCleanDelivered++;
+                        deliveredThisWave++;
                         audio.playBeep(true);
                         createExplosion(targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y, '#39ff88', 8);
                         floatingText(`DELIVERED +$${reward}`, targetPort.getAbsoluteCoords().x, targetPort.getAbsoluteCoords().y - 15, '#39ff88');
@@ -1339,6 +1554,7 @@
                     }
                 } 
                 else if (targetModule.type === 'firewall') {
+                    targetModule.temp += 0.35 * currentWave;
                     // Firewall processes the packet
                     if (this.type === 'good') {
                         // Pass through directly to active Output ports
@@ -1517,8 +1733,31 @@
             return modules.flatMap(m => m.ports);
         }
 
+        function getBladeCost(moduleType, count = modules.filter(m => m.type === moduleType).length) {
+            if (count >= 3) return 'MAX';
+            return moduleType === 'firewall'
+                ? 300 + (count * 260)
+                : 250 + (count * 210);
+        }
+
+        function recordManualAction() {
+            lastManualActionAt = Date.now();
+            if (wavePhase === 'active') {
+                manualOpsThisWave++;
+            }
+        }
+
         function canDragModule(moduleInst) {
             return moduleInst.type === 'load_balancer' || moduleInst.type === 'firewall';
+        }
+
+        function getRackBounds() {
+            const sideHudWidth = canvas.width >= 1300 ? 330 : 286;
+            const gutter = 28;
+            const left = Math.min(sideHudWidth, canvas.width * 0.24) + gutter;
+            const right = canvas.width - left;
+            const width = Math.max(460, right - left);
+            return { left, right, width, center: left + width / 2 };
         }
 
         // ==========================================
@@ -1583,31 +1822,33 @@
             packets = [];
             particles = [];
 
-            const w = canvas.width;
+            const rack = getRackBounds();
+            const w = rack.width;
             const h = canvas.height;
 
             // Generate physical rack slots layout
             // Main Top WAN Gateway
-            modules.push(new Module(1, 'wan_gateway', 'WAN GATEWAY BLADE [SLOT 1]', w * 0.1, 40, w * 0.8, 55));
+            modules.push(new Module(1, 'wan_gateway', 'WAN GATEWAY BLADE [SLOT 1]', rack.left, 40, w, 55));
 
             if (topology === 'standard') {
                 // Populate intermediate units
-                modules.push(new Module(2, 'load_balancer', 'BALANCER BLADE-01 [SLOT 2]', w * 0.1, 140, w * 0.35, 55));
-                modules.push(new Module(3, 'firewall', 'FIREWALL ASIC-01 [SLOT 3]', w * 0.55, 140, w * 0.35, 55));
+                modules.push(new Module(2, 'load_balancer', 'BALANCER BLADE-01 [SLOT 2]', rack.left, 140, w * 0.42, 55));
+                modules.push(new Module(3, 'firewall', 'FIREWALL ASIC-01 [SLOT 3]', rack.right - (w * 0.42), 140, w * 0.42, 55));
             }
 
             // Bottom Core Database Mainframe Server
-            modules.push(new Module(4, 'mainframe_db', 'CORE MAIN DATABASE [SLOT 4]', w * 0.1, 250, w * 0.8, 55));
+            modules.push(new Module(4, 'mainframe_db', 'CORE MAIN DATABASE [SLOT 4]', rack.left, 250, w, 55));
 
             layoutRackModules();
             renderThermalMonitors();
         }
 
         function layoutRackModules() {
-            const w = canvas.width;
+            const rack = getRackBounds();
+            const w = rack.width;
             const bladeStartY = 140;
             const bladeRowGap = 75;
-            const bladeWidth = w * 0.35;
+            const bladeWidth = w * 0.42;
 
             const balancers = modules.filter(m => m.type === 'load_balancer');
             const firewalls = modules.filter(m => m.type === 'firewall');
@@ -1615,26 +1856,26 @@
 
             modules.forEach(m => {
                 if (m.type === 'wan_gateway') {
-                    m.x = w * 0.1;
+                    m.x = rack.left;
                     m.y = 40;
-                    m.w = w * 0.8;
+                    m.w = w;
                 } else if (m.type === 'mainframe_db') {
-                    m.x = w * 0.1;
+                    m.x = rack.left;
                     m.y = bladeStartY + (rowCount * bladeRowGap) + 35;
-                    m.w = w * 0.8;
+                    m.w = w;
                 }
             });
 
             balancers.forEach((m, index) => {
                 if (m.customPosition) return;
-                m.x = w * 0.1;
+                m.x = rack.left;
                 m.y = bladeStartY + (index * bladeRowGap);
                 m.w = bladeWidth;
             });
 
             firewalls.forEach((m, index) => {
                 if (m.customPosition) return;
-                m.x = w * 0.55;
+                m.x = rack.right - bladeWidth;
                 m.y = bladeStartY + (index * bladeRowGap);
                 m.w = bladeWidth;
             });
@@ -1671,7 +1912,7 @@
 
             // Reset scores
             score = 0;
-            credits = 600;
+            credits = 450;
             systemIntegrity = 100;
             nitrogenPower = 100;
             currentWave = 1;
@@ -1685,6 +1926,14 @@
             eventSpawnTicker = 0;
             lastNoRouteWarningAt = 0;
             lastNoOutputWarningAt = 0;
+            lastManualActionAt = Date.now();
+            staticTraceCooldownUntil = 0;
+            activeDirective = null;
+            manualOpsThisWave = 0;
+            slicesThisWave = 0;
+            blocksThisWave = 0;
+            deliveredThisWave = 0;
+            directiveFailedThisWave = false;
             waveBuffPending = false;
             bonusCableCapacity = 0;
             abilityCooldownMultiplier = 1;
@@ -1704,6 +1953,7 @@
             updateEventHUD();
             updateAbilityHUD();
             updateSkipPrepButton();
+            updateDirectiveHUD();
             logIDS('// PREP WINDOW ACTIVE // PATCH ROUTES BEFORE TRAFFIC ARRIVES', 'cyan');
         }
 
@@ -1753,6 +2003,7 @@
 
         function activateAbility(key) {
             audio.init();
+            recordManualAction();
             const ability = abilities[key];
             if (!ability) return;
 
@@ -1835,6 +2086,7 @@
             }
 
             audio.playBeep(true);
+            recordManualAction();
             updateAbilityHUD();
         }
 
@@ -1866,6 +2118,8 @@
                 waveSpawnTicker++;
                 maybeStartChaosEvent();
                 updateChaosEvent();
+                checkAdaptiveRoutePressure();
+                updateDirectiveHUD();
 
                 // Spawning rate algorithm
                 const eventSpawnPressure = activeEvent?.id === 'portSurge' ? 34 : 0;
@@ -1883,6 +2137,7 @@
             }
 
             updateEventHUD();
+            updateDirectiveHUD();
 
             // Nitrogen recharge ticker
             if (nitrogenPower < 100) {
@@ -1901,6 +2156,12 @@
                 activeEvent = null;
                 eventTriggeredThisWave = false;
                 eventSpawnTicker = 0;
+                manualOpsThisWave = 0;
+                slicesThisWave = 0;
+                blocksThisWave = 0;
+                deliveredThisWave = 0;
+                directiveFailedThisWave = false;
+                startWaveDirective();
                 floatingText('TRAFFIC LIVE', canvas.width / 2, 90, '#f0ff4f');
                 logIDS(`[WAVE] Wave ${currentWave} traffic is live. Maintain routes manually.`, 'cyan');
                 audio.playBeep(true);
@@ -1910,13 +2171,26 @@
             if (wavePhase === 'active') {
                 wavePhase = 'recovery';
                 clearChaosEvent();
-                credits += 250; // Completion bonus
+                const directiveComplete = isDirectiveComplete();
+                if (directiveComplete) {
+                    const reward = 90 + (currentWave * 18);
+                    credits += reward;
+                    score += 300 + (currentWave * 80);
+                    floatingText(`DIRECTIVE CLEAR +$${reward}`, canvas.width/2, canvas.height/2, '#39ff88');
+                    logIDS(`[SUCCESS] Wave ${currentWave} directive complete. Recovery bonus granted (+$${reward}).`, 'emerald');
+                } else {
+                    directiveFailedThisWave = true;
+                    const damage = Math.min(28, 8 + currentWave * 3);
+                    systemIntegrity = Math.max(0, systemIntegrity - damage);
+                    floatingText(`DIRECTIVE FAILED -${damage}%`, canvas.width/2, canvas.height/2, '#ff2d55');
+                    showCombatAlert(`DIRECTIVE FAILED // INTEGRITY -${damage}%`, '#ff2d55');
+                    logIDS(`[FAIL] Wave ${currentWave} directive failed. Integrity penalty applied.`, 'rose');
+                }
                 waveBuffPending = true;
                 const buffOverlay = document.getElementById('overlay-buff');
                 buffOverlay.classList.remove('hidden');
                 buffOverlay.classList.add('flex');
-                floatingText('RECOVERY +$250', canvas.width/2, canvas.height/2, '#39ff88');
-                logIDS(`[SUCCESS] Wave ${currentWave} contained. Recovery window open (+$250).`, 'emerald');
+                activeDirective = null;
                 audio.playBeep(true);
                 return;
             }
@@ -1934,6 +2208,88 @@
             connections.forEach(c => c.traffic = []);
             floatingText(`PREP WAVE ${currentWave}`, canvas.width/2, 90, '#38f8ff');
             logIDS(`[PREP] Wave ${currentWave} staging. Rewire before the next traffic burst.`, 'cyan');
+        }
+
+        function startWaveDirective() {
+            const rotation = currentWave % 4;
+            if (rotation === 1) {
+                activeDirective = {
+                    id: 'deliver',
+                    title: 'DELIVER CLEAN TRAFFIC',
+                    detail: 'Route clean packets to core before the timer expires.',
+                    target: 4 + currentWave,
+                    getValue: () => deliveredThisWave
+                };
+            } else if (rotation === 2) {
+                activeDirective = {
+                    id: 'filter',
+                    title: 'SHRED HOSTILE PAYLOADS',
+                    detail: 'Route malware through firewalls. Static paths will be traced.',
+                    target: 3 + Math.ceil(currentWave * 1.5),
+                    getValue: () => blocksThisWave
+                };
+            } else if (rotation === 3) {
+                activeDirective = {
+                    id: 'rewire',
+                    title: 'MANUAL REWIRE REQUIRED',
+                    detail: 'Make live cable changes. The enemy is adapting to static topology.',
+                    target: Math.min(8, 2 + currentWave),
+                    getValue: () => manualOpsThisWave
+                };
+            } else {
+                activeDirective = {
+                    id: 'cut',
+                    title: 'PURGE COMPROMISED LINES',
+                    detail: 'Cut or unplug cables during the wave to clear traced routes.',
+                    target: Math.min(5, 1 + Math.floor(currentWave / 2)),
+                    getValue: () => slicesThisWave
+                };
+            }
+
+            showCombatAlert(activeDirective.title, '#fbbf24');
+            logIDS(`[DIRECTIVE] ${activeDirective.title}: ${activeDirective.detail}`, 'amber');
+            updateDirectiveHUD();
+        }
+
+        function isDirectiveComplete() {
+            return !activeDirective || activeDirective.getValue() >= activeDirective.target;
+        }
+
+        function updateDirectiveHUD() {
+            const title = document.getElementById('directive-title');
+            const count = document.getElementById('directive-count');
+            const progress = document.getElementById('directive-progress');
+            const detail = document.getElementById('directive-detail');
+            if (!title || !count || !progress || !detail) return;
+
+            if (!activeDirective) {
+                title.innerText = wavePhase === 'prep' ? 'DIRECTIVE ARMS ON TRAFFIC' : 'DIRECTIVE WAITING';
+                count.innerText = '--';
+                progress.style.width = '0%';
+                progress.style.background = '#64748b';
+                detail.innerText = wavePhase === 'recovery' ? 'Recovery window open.' : 'Prep routes, then survive the directive.';
+                return;
+            }
+
+            const value = activeDirective.getValue();
+            const pct = Math.min(100, (value / activeDirective.target) * 100);
+            const complete = value >= activeDirective.target;
+            title.innerText = activeDirective.title;
+            count.innerText = `${Math.min(value, activeDirective.target)}/${activeDirective.target}`;
+            progress.style.width = `${pct}%`;
+            progress.style.background = complete ? '#39ff88' : '#fbbf24';
+            detail.innerText = activeDirective.detail;
+        }
+
+        function showCombatAlert(text, color = '#ff2d55') {
+            const alert = document.getElementById('combat-alert');
+            if (!alert) return;
+            alert.innerText = text;
+            alert.style.borderColor = color;
+            alert.style.color = color;
+            alert.classList.remove('hidden');
+            clearTimeout(showCombatAlert.timeoutId);
+            showCombatAlert.timeoutId = setTimeout(() => alert.classList.add('hidden'), 2600);
         }
 
         function maybeStartChaosEvent() {
@@ -2023,6 +2379,44 @@
             }
         }
 
+        function checkAdaptiveRoutePressure() {
+            if (currentWave < 3 || connections.length < 3) return;
+            const now = Date.now();
+            const idleMs = now - lastManualActionAt;
+            if (idleMs < 13500 || now < staticTraceCooldownUntil) return;
+
+            traceStaticRoute();
+            staticTraceCooldownUntil = now + Math.max(8500, 16000 - (currentWave * 1000));
+        }
+
+        function traceStaticRoute() {
+            const candidates = connections.filter(c => Date.now() >= c.tracedUntil);
+            if (candidates.length === 0) return;
+
+            const firewallRoutes = candidates.filter(c => c.source.parent.type === 'firewall' || c.target.parent.type === 'firewall');
+            const cable = (firewallRoutes.length ? firewallRoutes : candidates)[Math.floor(Math.random() * (firewallRoutes.length ? firewallRoutes.length : candidates.length))];
+            cable.tracedUntil = Date.now() + 15000;
+            cable.noiseLevel += 2;
+
+            const targetModule = cable.target.parent;
+            targetModule.temp = Math.min(targetModule.maxTemp, targetModule.temp + 10 + currentWave);
+            systemIntegrity = Math.max(0, systemIntegrity - Math.max(1, currentWave - 3));
+
+            for (let i = 0; i < Math.min(4, 1 + currentWave); i++) {
+                if (cable.traffic.length >= getCableBandwidthLimit()) break;
+                const pack = new Packet(cable, Math.random() < 0.5 ? 'ransomware' : 'ddos');
+                pack.speed *= 1.15;
+                cable.traffic.push(pack);
+                packets.push(pack);
+            }
+
+            const p = cable.getPointAt(0.5);
+            createSparks(p.x, p.y, '#ff2d55', 10);
+            floatingText('STATIC ROUTE TRACED', p.x, p.y - 20, '#ff2d55');
+            logIDS('[ADAPTIVE] Enemy learned a static route. Move, cut, or reroute traced cables before the pressure compounds.', 'rose');
+            audio.playAlarm();
+        }
+
         function skipPrepPhase() {
             if (appState !== 'playing' || wavePhase !== 'prep') return;
             logIDS('[WAVE] Prep skipped. Traffic released manually.', 'cyan');
@@ -2087,7 +2481,9 @@
             if (activeWanCables.length === 0) {
                 if (Date.now() - lastNoRouteWarningAt > 1800) {
                     lastNoRouteWarningAt = Date.now();
+                    systemIntegrity = Math.max(0, systemIntegrity - 0.7);
                     logIDS('[WARNING] WAN has no patch cables. Incoming traffic is piling up.', 'amber');
+                    showCombatAlert('NO WAN ROUTE // INTEGRITY BLEED', '#fbbf24');
                     floatingText('PATCH WAN OUTPUTS', wanModule.x + wanModule.w / 2, wanModule.y - 10, '#f59e0b');
                 }
                 return;
@@ -2216,9 +2612,10 @@
 
             credits -= upgradeInst.cost;
             upgradeInst.level++;
-            upgradeInst.cost = Math.floor(upgradeInst.cost * 1.5);
+            upgradeInst.cost = Math.floor(upgradeInst.cost * 2.15);
 
             audio.playSnap();
+            recordManualAction();
             logIDS(`[SHOP] Upgraded ${upgradeInst.title} to Level ${upgradeInst.level}`, 'emerald');
             updateShopHUD();
         }
@@ -2226,17 +2623,15 @@
         function buyBlade(type) {
             audio.init();
             const moduleType = type === 'firewall' ? 'firewall' : 'load_balancer';
-            const cost = moduleType === 'firewall' ? 300 : 250;
-            if (credits < cost) {
-                logIDS('[SHOP] Insufficient budget for hardware blade.', 'rose');
-                audio.playBeep(false);
-                return;
-            }
-
-            // Cap the maximum active units on rack to prevent overlap
             const existingCount = modules.filter(m => m.type === moduleType).length;
             if (existingCount >= 3) {
                 logIDS(`[SHOP] Max limit of (3) reached for ${moduleType.toUpperCase()} blades!`, 'rose');
+                audio.playBeep(false);
+                return;
+            }
+            const cost = getBladeCost(moduleType, existingCount);
+            if (credits < cost) {
+                logIDS('[SHOP] Insufficient budget for hardware blade.', 'rose');
                 audio.playBeep(false);
                 return;
             }
@@ -2248,18 +2643,20 @@
             const slotOffset = existingCount * 45;
             const finalY = startY + slotOffset;
 
-            const w = canvas.width;
+            const rack = getRackBounds();
+            const w = rack.width;
             const bladeNumber = String(existingCount + 1).padStart(2, '0');
             const labelStr = moduleType === 'firewall' ? `FIREWALL ASIC-${bladeNumber} [SLOT 3]` : `BALANCER BLADE-${bladeNumber} [SLOT 2]`;
-            const moduleWidth = w * 0.35;
+            const moduleWidth = w * 0.42;
             // Place side by side depending on type
-            const finalX = moduleType === 'firewall' ? w * 0.55 : w * 0.1;
+            const finalX = moduleType === 'firewall' ? rack.right - moduleWidth : rack.left;
 
             const newModule = new Module(modules.length + 1, moduleType, labelStr, finalX, finalY, moduleWidth, 55);
             modules.push(newModule);
             layoutRackModules();
 
             audio.playSnap();
+            recordManualAction();
             createExplosion(finalX + moduleWidth/2, finalY + 27, moduleType === 'firewall' ? '#fbbf24' : '#22d3ee', 12);
             logIDS(`[SHOP] Deployed dynamic rack blade: ${labelStr}`, 'emerald');
 
@@ -2270,6 +2667,10 @@
         function updateShopHUD() {
             document.getElementById('credits-display').innerText = `$${credits}`;
             document.getElementById('score-display').innerText = score;
+            const balancerCost = getBladeCost('load_balancer');
+            const firewallCost = getBladeCost('firewall');
+            document.getElementById('cost-blade-balancer').innerText = balancerCost === 'MAX' ? 'MAX' : `$${balancerCost}`;
+            document.getElementById('cost-blade-firewall').innerText = firewallCost === 'MAX' ? 'MAX' : `$${firewallCost}`;
 
             // Upgrades cards
             for (const key in upgrades) {
@@ -2414,6 +2815,8 @@
                     doomedCable.target.connectedCable = null;
                     
                     statsCordsSevered++;
+                    slicesThisWave++;
+                    recordManualAction();
                     audio.playCut();
                     createExplosion(coords.x, coords.y, isAbilityActive('hotSwap') ? '#ff2bd6' : '#f59e0b', isAbilityActive('hotSwap') ? 10 : 5);
                     if (isAbilityActive('hotSwap')) {
@@ -2443,6 +2846,7 @@
                         y: coords.y - moduleHit.y
                     };
                     moduleHit.customPosition = true;
+                    recordManualAction();
                     floatingText('RACK UNIT RELEASED', moduleHit.x + moduleHit.w / 2, moduleHit.y - 10, '#38f8ff');
                     return;
                 } else if (moduleHit && wavePhase === 'active') {
@@ -2467,8 +2871,8 @@
             hoveredModule = hoveredPort ? null : checkModuleClick(coords.x, coords.y);
 
             if (draggingModule) {
-                const padding = 12;
-                draggingModule.x = Math.max(padding, Math.min(canvas.width - draggingModule.w - padding, coords.x - moduleDragOffset.x));
+                const rack = getRackBounds();
+                draggingModule.x = Math.max(rack.left, Math.min(rack.right - draggingModule.w, coords.x - moduleDragOffset.x));
                 draggingModule.y = Math.max(105, Math.min(canvas.height - draggingModule.h - 20, coords.y - moduleDragOffset.y));
                 return;
             }
@@ -2490,6 +2894,7 @@
                 draggingModule = null;
                 createExplosion(moved.x + moved.w / 2, moved.y + moved.h / 2, '#38f8ff', 5);
                 logIDS(`[RACK] Repositioned ${moved.label}. Cable lengths and crossings updated.`, 'cyan');
+                recordManualAction();
                 audio.playSnap();
             }
 
@@ -2511,6 +2916,7 @@
                             connections.push(newCable);
                             activePortSelection.connectedCable = newCable;
                             targetPort.connectedCable = newCable;
+                            recordManualAction();
                             
                             audio.playSnap();
                             logIDS(`[SYS-PATCH] Connected patch cord between ${activePortSelection.parent.label} and ${targetPort.parent.label}`, 'cyan');
@@ -2570,6 +2976,8 @@
                     
                     createExplosion((c.source.getAbsoluteCoords().x + c.target.getAbsoluteCoords().x)/2, (c.source.getAbsoluteCoords().y + c.target.getAbsoluteCoords().y)/2, '#f97316', 12);
                     statsCordsSevered++;
+                    slicesThisWave++;
+                    recordManualAction();
                     audio.playCut();
                     logIDS(`[WARNING] Patch cord severed manually by shears!`, 'rose');
                     return false;
@@ -2663,22 +3071,42 @@
 
             // Clear Frame
             const bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            bg.addColorStop(0, '#03040a');
-            bg.addColorStop(0.52, '#070913');
-            bg.addColorStop(1, '#020207');
+            bg.addColorStop(0, '#000000');
+            bg.addColorStop(0.52, '#02030a');
+            bg.addColorStop(1, '#000000');
             ctx.fillStyle = bg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const glow = ctx.createRadialGradient(canvas.width * 0.5, canvas.height * 0.18, 20, canvas.width * 0.5, canvas.height * 0.18, canvas.width * 0.72);
-            glow.addColorStop(0, 'rgba(236, 72, 153, 0.11)');
-            glow.addColorStop(0.45, 'rgba(34, 211, 238, 0.055)');
+            glow.addColorStop(0, 'rgba(236, 72, 153, 0.06)');
+            glow.addColorStop(0.45, 'rgba(34, 211, 238, 0.035)');
             glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
             ctx.fillStyle = glow;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            const rack = getRackBounds();
+            ctx.save();
+            ctx.strokeStyle = 'rgba(245, 158, 11, 0.08)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([10, 16]);
+            ctx.beginPath();
+            ctx.moveTo(rack.left - 18, 16);
+            ctx.lineTo(rack.left - 18, canvas.height - 28);
+            ctx.moveTo(rack.right + 18, 16);
+            ctx.lineTo(rack.right + 18, canvas.height - 28);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = 'rgba(245, 158, 11, 0.028)';
+            for (let i = 0; i < 28; i++) {
+                const x = rack.left + ((i * 97) % rack.width);
+                const y = 30 + ((i * 151) % Math.max(1, canvas.height - 90));
+                ctx.fillRect(x, y, 18 + (i % 5) * 7, 1);
+            }
+            ctx.restore();
+
             // Tech grid alignment points
             ctx.save();
-            ctx.strokeStyle = 'rgba(34, 211, 238, 0.045)';
+            ctx.strokeStyle = 'rgba(34, 211, 238, 0.024)';
             ctx.lineWidth = 1;
             for (let x = 0; x < canvas.width; x += 80) {
                 ctx.beginPath();
@@ -2686,14 +3114,14 @@
                 ctx.lineTo(x, canvas.height);
                 ctx.stroke();
             }
-            ctx.strokeStyle = 'rgba(236, 72, 153, 0.04)';
+            ctx.strokeStyle = 'rgba(236, 72, 153, 0.02)';
             for (let y = 0; y < canvas.height; y += 80) {
                 ctx.beginPath();
                 ctx.moveTo(0, y);
                 ctx.lineTo(canvas.width, y);
                 ctx.stroke();
             }
-            ctx.fillStyle = 'rgba(34, 211, 238, 0.12)';
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.07)';
             for (let x = 20; x < canvas.width; x += 40) {
                 for (let y = 20; y < canvas.height; y += 40) {
                     ctx.beginPath();
@@ -2735,12 +3163,23 @@
                         }
                         if (m.scanProgress >= 1.0) {
                             // Purge virus successfully
+                            const scannedType = m.scanningPacket?.type || 'malware';
+                            const mutates = currentWave >= 5 && Math.random() < (0.16 + (m.temp >= 70 ? 0.14 : 0));
                             statsMalwareBlocks++;
                             audio.playZap();
-                            createExplosion(m.x + 120, m.y + 26, '#fbbf24', 8);
-                            floatingText(`+$15 FW-SHRED`, m.x + 120, m.y - 10, '#fbbf24');
-                            credits += 15;
-                            score += 60;
+                            if (mutates) {
+                                createExplosion(m.x + 120, m.y + 26, '#ff2d55', 12);
+                                floatingText('MUTATED', m.x + 120, m.y - 10, '#ff2d55');
+                                logIDS(`[ADAPTIVE] ${m.label} shredded a decoy. Payload mutated downstream.`, 'rose');
+                                dispatchDirectlyFromModule(m, scannedType);
+                                m.temp = Math.min(m.maxTemp, m.temp + 8);
+                            } else {
+                                createExplosion(m.x + 120, m.y + 26, '#fbbf24', 8);
+                                floatingText(`+$6 FW-SHRED`, m.x + 120, m.y - 10, '#fbbf24');
+                                credits += 6;
+                                score += 60;
+                                blocksThisWave++;
+                            }
                             
                             m.scanningPacket = null;
                             m.scanProgress = 0;
