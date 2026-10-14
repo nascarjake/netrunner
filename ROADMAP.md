@@ -1,5 +1,50 @@
 # NetDefend Roadmap
 
+## Story tutorial and engagement systems
+
+New players can run an untimed night-shift drill before the first wave. Mara
+guides a safe WAN → Firewall → Core route, then sends clean and hostile test
+packets. The player cools the rack, activates diagnostics, and spends a training
+grant on an upgrade. The drill can be skipped or replayed from suite selection.
+
+Every story wave now has a briefing choice. Later chapters introduce load
+balancing, rack placement, operating modes, panic tools, trace pressure,
+Inspector blades, quarantine, repairs, and contracts when those systems become
+relevant. Optional field assignments reward trying them during live traffic.
+
+- **Operating modes:** Guard filters faster for less income; Salvage pays more
+  but heats the rack and raises trace pressure. Mode changes lock during traffic.
+- **Enemy trace meter:** Static routes become visibly risky. Physical rewiring
+  lowers pressure, and traced cables can be cut for a field reward.
+- **Delivery streaks:** Consecutive clean deliveries earn a growing payout;
+  breaches reset the streak.
+- **Scripted wave-three ghost:** The first masked payload is guaranteed to
+  appear, giving the Inspector lesson a reliable threat to respond to.
+
+Next: observe players learning the drill and tune pacing, field rewards, and
+late-wave pressure from real play sessions.
+
+## Current expansion
+
+The rack now has a seven-wave story arc with a decision briefing each wave. The final
+operation resolves the hidden signal and opens an endless contract board. Career
+Intel and best wave persist locally; Intel unlocks advanced blades on later runs.
+Clearing the story unlocks a Veteran Suite with an Inspector and a smaller
+starting budget.
+
+- Inspector blades reveal masked green payloads before they reach a firewall.
+- Quarantine blades hold hostile packets until the operator spends N₂ to purge
+  them. Full cells spill traffic downstream.
+- Core Armor, Isolation Cells, and paid repairs add budget and survival choices.
+- Ghost Signal, Firewall Desync, Thermal Inversion, and Black Ice Convoy add
+  advanced hazards. Events give a three-second warning before impact.
+- Endless contracts offer heat, stealth, or traffic pressure in exchange for
+  higher payouts. Wave speed and hostile traffic chance have caps to keep
+  long runs playable.
+
+The next priority is playtesting late-wave balance and adding more consequences
+to the story choices, then expanding the contract pool and boss identities.
+
 This roadmap keeps the prototype focused on the part that already feels good: manually managing a messy physical network under pressure. The goal is not pure automation or tower-defense optimization. The goal is controlled chaos: moving cables, balancing heat and traffic, responding to weird events, and barely saving the rack because the player made fast, readable decisions.
 
 ## Design Pillars

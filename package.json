@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "npx http-server . -p 8765 -c-1",
-    "ngrok": "ngrok http 8765"
+    "ngrok": "ngrok http 8765",
+    "test": "node --test tests/*.test.mjs"
   }
 }
